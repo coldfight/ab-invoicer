@@ -46,7 +46,7 @@ func (r *RequestPdf) GeneratePdf(pdfPath string) (bool, error) {
 	f, err := os.Open(fileName)
 	if f != nil {
 		defer f.Close()
-		//defer os.Remove(fileName)
+		defer os.Remove(fileName)
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -89,7 +89,7 @@ func toBase64(b []byte) string {
 
 func convertImageToBase64() template.URL {
 	// Read the entire file into a byte slice
-	bytes, err := os.ReadFile("./assets/images/invoicer.jpg")
+	b, err := os.ReadFile("./assets/images/invoicer.jpg")
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -97,7 +97,7 @@ func convertImageToBase64() template.URL {
 	var base64Encoding string
 
 	// Determine the content type of the image file
-	mimeType := http.DetectContentType(bytes)
+	mimeType := http.DetectContentType(b)
 
 	// Prepend the appropriate URI scheme header depending
 	// on the MIME type
@@ -109,7 +109,7 @@ func convertImageToBase64() template.URL {
 	}
 
 	// Append the base64 encoded output
-	base64Encoding += toBase64(bytes)
+	base64Encoding += toBase64(b)
 
 	return template.URL(base64Encoding)
 }
