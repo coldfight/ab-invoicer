@@ -23,13 +23,16 @@
         }
     </style>
 </head>
-<body style="font-family: 'fira-code-mono',monospace; width: 1062px; height: 1374px; overflow: hidden;">
+<body style="font-family: 'fira-code-mono',monospace; width: 1062px; height: 1374px; overflow: hidden; padding: 35px 25px">
 <div class="container" style="overflow: hidden;">
     <!-- Header stuff -->
 
     <div class="row">
         <div class="col">
-            <em>Mamma Info</em>
+            {{.Owner.Name}}<br>
+            {{.Owner.Street}}<br>
+            {{.Owner.City}}, {{.Owner.Province}}<br>
+            {{.Owner.PostalCode}}
         </div>
         <div class="col">
             <div class="row">
@@ -45,16 +48,17 @@
         </div>
     </div>
 
+    <hr>
     <!-- Bill To -->
     <div class="row">
         <div class="col-2">
             Billed To:
         </div>
         <div class="col">
-            Applewood Gospel Hall<br>
-            15 Dummy Street Area<br>
-            Mississauga, Ontario<br>
-            L4Z1K7
+            {{.BilledTo.Name}}<br>
+            {{.BilledTo.Street}}<br>
+            {{.BilledTo.City}}, {{.BilledTo.Province}}<br>
+            {{.BilledTo.PostalCode}}
         </div>
     </div>
 
@@ -65,7 +69,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col" style="width:10%">Quantity</th>
+                    <th scope="col" style="width:15%">Quantity</th>
                     <th scope="col">Description</th>
                     <th scope="col" style="width:15%" class="text-right">Unit Price</th>
                     <th scope="col" style="width:15%" class="text-right">Amount</th>
@@ -96,7 +100,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">Date</th>
+                    <th scope="col" style="width: 15%">Date</th>
                     <th scope="col">Description</th>
                     <th scope="col" class="text-right">Amount</th>
                 </tr>

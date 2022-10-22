@@ -41,6 +41,25 @@ func LabourSubtotal(ls []Labour) float64 {
 	return sum
 }
 
+type BilledTo struct {
+	Name       string
+	Street     string
+	City       string
+	Province   string
+	PostalCode string
+	Phone      string
+}
+
+type Owner struct {
+	Name       string
+	Street     string
+	City       string
+	Province   string
+	PostalCode string
+	Phone      string
+	Email      string
+}
+
 func Create() {
 	expenses := []Expense{
 		{
@@ -83,9 +102,30 @@ func Create() {
 		},
 	}
 
+	billedTo := BilledTo{
+		Name:       "Applewood Gospel Hall",
+		Street:     "15 Dummy Street Area",
+		City:       "Mississauga",
+		Province:   "Ontario",
+		PostalCode: "M4T 2T1",
+		Phone:      "416.555.5555",
+	}
+
+	owner := Owner{
+		Name:       "My name",
+		Street:     "555 Mississauga Valley Blvd.",
+		City:       "Mississauga",
+		Province:   "Ontario",
+		PostalCode: "M4T 2T1",
+		Phone:      "416.555.5456",
+		Email:      "myemail@example.com",
+	}
+
 	templateData := struct {
 		Expenses         []Expense
 		Labours          []Labour
+		BilledTo         BilledTo
+		Owner            Owner
 		GetAbsPath       func(string) string
 		AsCurrency       func(float64) string
 		ExpensesSubtotal func([]Expense) float64
@@ -93,6 +133,8 @@ func Create() {
 	}{
 		Expenses:         expenses,
 		Labours:          labours,
+		BilledTo:         billedTo,
+		Owner:            owner,
 		GetAbsPath:       tools.FullFilePath,
 		AsCurrency:       tools.Currency,
 		ExpensesSubtotal: ExpensesSubtotal,
