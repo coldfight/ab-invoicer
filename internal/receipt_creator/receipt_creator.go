@@ -108,5 +108,5 @@ func Create() {
 		LabourSubtotal:   LabourSubtotal,
 	}
 
-	tools.CreatePdf("./templates/test.tmpl", "./storage/pdf.pdf", templateData)
+	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
 }
