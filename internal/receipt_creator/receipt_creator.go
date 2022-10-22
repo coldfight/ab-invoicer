@@ -1,17 +1,9 @@
 package receipt_creator
 
 import (
-	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/tools"
 	"time"
 )
-
-type Totalable interface {
-	TotalCost() float64
-}
-type Enumerable interface {
-	Each(handler func(Totalable))
-}
 
 type Expense struct {
 	Quantity    int
@@ -46,36 +38,6 @@ func LabourSubtotal(ls []Labour) float64 {
 	for _, l := range ls {
 		sum += l.TotalCost()
 	}
-	return sum
-}
-
-type TotalableList []Totalable
-
-func (tl TotalableList) Each(handler func(Totalable)) {
-	for _, t := range tl {
-		handler(t)
-	}
-}
-
-type ExpenseList []Expense
-type LabourList []Labour
-
-func (el ExpenseList) Each(handler func(Totalable)) {
-	for _, e := range el {
-		handler(e)
-	}
-}
-func (ll LabourList) Each(handler func(Totalable)) {
-	for _, l := range ll {
-		handler(l)
-	}
-}
-
-func Subtotal(s Enumerable) float64 {
-	sum := 0.0
-	s.Each(func(t Totalable) {
-		sum += t.TotalCost()
-	})
 	return sum
 }
 
@@ -125,20 +87,17 @@ func Create() {
 		Expenses         []Expense
 		Labours          []Labour
 		GetAbsPath       func(string) string
+		AsCurrency       func(float64) string
 		ExpensesSubtotal func([]Expense) float64
 		LabourSubtotal   func([]Labour) float64
 	}{
 		Expenses:         expenses,
 		Labours:          labours,
 		GetAbsPath:       tools.FullFilePath,
+		AsCurrency:       tools.Currency,
 		ExpensesSubtotal: ExpensesSubtotal,
 		LabourSubtotal:   LabourSubtotal,
 	}
-
-	e := []Totalable{expenses[0], expenses[1], expenses[2]}
-	l := []Totalable{labours[0], labours[1], labours[2], labours[3]}
-	fmt.Println(Subtotal(TotalableList(e)))
-	fmt.Println(Subtotal(TotalableList(l)))
 
 	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
 }

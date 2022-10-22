@@ -76,12 +76,13 @@
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
-                        <td class="text-right">{{.UnitPrice}}</td>
-                        <td class="text-right">{{.TotalCost}}</td>
+                        <td class="text-right">{{call $.AsCurrency .UnitPrice}}</td>
+                        <td class="text-right">{{call $.AsCurrency .TotalCost}}</td>
                     </tr>
                 {{end}}
                 <tr>
-                    <td colspan="4" class="text-right">Total: {{call .ExpensesSubtotal .Expenses}}</td>
+                    <td colspan="4" class="text-right">
+                        Total: {{call .ExpensesSubtotal .Expenses | call .AsCurrency}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -105,14 +106,15 @@
                     <tr>
                         <td>{{.Date.Format "Jan 01, 2006"}}</td>
                         <td>{{.Description}}</td>
-                        <td class="text-right">{{.Amount}}</td>
+                        <td class="text-right">{{call $.AsCurrency .Amount}}</td>
                     </tr>
                 {{end}}
                 <tr>
-                    <td colspan="3" class="text-right">Total: {{call .LabourSubtotal .Labours}}</td>
+                    <td colspan="3" class="text-right">Total: {{call .LabourSubtotal .Labours | call .AsCurrency}}</td>
                 </tr>
                 </tbody>
             </table>
+
         </div>
     </div>
 </div>
