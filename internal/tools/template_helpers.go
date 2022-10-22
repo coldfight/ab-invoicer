@@ -14,9 +14,9 @@ type Font struct {
 }
 
 type FontFamily struct {
-	Name   string
-	Bold   Font
-	Normal Font
+	Name    string
+	Bold    Font
+	Regular Font
 }
 
 func toBase64(b []byte) string {

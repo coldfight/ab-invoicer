@@ -7,24 +7,24 @@
         {{.BootstrapStylesheet}}
 
         @font-face {
-            font-family: '{{ .Font.Name }}';
-            src: url({{ .Font.Normal.Src }}) format('woff2'),
-            url({{ .Font.Normal.Url }}) format('woff');
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Regular.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Regular.Url }}) format('woff');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
-            font-family: '{{ .Font.Name }}';
-            src: url({{ .Font.Bold.Src }}) format('woff2'),
-            url({{ .Font.Bold.Url }}) format('woff');
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Bold.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Bold.Url }}) format('woff');
             font-weight: bold;
             font-style: normal;
         }
 
     </style>
 </head>
-<body style="font-family: '{{.Font.Name}}'; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
+<body style="font-family: '{{.Fonts.Mono.Name}}'; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
 <div class="container">
     <!-- Header stuff -->
 
@@ -34,13 +34,13 @@
         </div>
         <div class="col">
             <div class="row">
-                <div class="col">
+                <div class="col font-weight-bold">
                     INVOICE
                 </div>
             </div>
             <div class="row">
                 <div class="col">
-                    INVOICE # 12345 | DATE: 05/05/2019
+                    <strong>INVOICE #</strong> 12345 | <strong>DATE:</strong> 05/05/2019
                 </div>
             </div>
         </div>
