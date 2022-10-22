@@ -1,17 +1,5 @@
 install wkhtmltopdf
 
-
-OR https://pandoc.org/MANUAL.html#option--pdf-engine
-
-sudo apt install pandoc
-sudo apt-get install texlive-latex-base
-sudo apt-get install texlive-fonts-recommended
-sudo apt-get install texlive-fonts-extra
-sudo apt-get install texlive-latex-extra
-
-sudo apt-get install texlive-full
-
-sudo apt-get install texmaker
-
-
-
+Helpful links
+https://www.reddit.com/r/golang/comments/3gtg3i/passing_slice_of_values_as_slice_of_interfaces/
+https://stackoverflow.com/questions/12753805/type-converting-slices-of-interfaces/12754757#12754757
