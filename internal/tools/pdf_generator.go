@@ -44,7 +44,7 @@ func (r *RequestPdf) generatePdf(pdfPath string) (bool, error) {
 	f, err := os.Open(fileName)
 	if f != nil {
 		defer f.Close()
-		//defer os.Remove(fileName) // @todo: Uncomment this
+		defer os.Remove(fileName) // @todo: Uncomment this
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -55,7 +55,10 @@ func (r *RequestPdf) generatePdf(pdfPath string) (bool, error) {
 		log.Fatal(err)
 	}
 
-	pdfg.AddPage(wkhtmltopdf.NewPageReader(f))
+	p := wkhtmltopdf.NewPageReader(f)
+	p.EnableLocalFileAccess.Set(true)
+
+	pdfg.AddPage(p)
 	pdfg.PageSize.Set(wkhtmltopdf.PageSizeLetter)
 	pdfg.Dpi.Set(300)
 

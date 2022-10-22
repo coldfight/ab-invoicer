@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <title>Title</title>
-    <style>
-        {{.BootstrapStylesheet}}
 
+    <link rel="stylesheet" href="{{call .GetAbsPath "./assets/bootstrap.css"}}">
+    <style>
         @font-face {
-            font-family: '{{ .Fonts.Mono.Name }}';
-            src: url({{ .Fonts.Mono.Regular.Src }}) format('woff2'),
-            url({{ .Fonts.Mono.Regular.Url }}) format('woff');
+            font-family: 'fira-code-mono';
+            src: url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
+            url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
-            font-family: '{{ .Fonts.Mono.Name }}';
-            src: url({{ .Fonts.Mono.Bold.Src }}) format('woff2'),
-            url({{ .Fonts.Mono.Bold.Url }}) format('woff');
+            font-family: 'fira-code-mono';
+            src: url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
+            url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
             font-weight: bold;
             font-style: normal;
         }
-
     </style>
 </head>
-<body style="font-family: '{{.Fonts.Mono.Name}}'; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
+<body style="font-family: 'fira-code-mono',monospace; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
 <div class="container">
     <!-- Header stuff -->
 
