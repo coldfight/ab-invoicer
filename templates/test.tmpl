@@ -2,8 +2,8 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
-
+    <title>Invoicer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="stylesheet" href="{{call .GetAbsPath "./assets/bootstrap.css"}}">
     <style>
         @font-face {
@@ -23,8 +23,8 @@
         }
     </style>
 </head>
-<body style="font-family: 'fira-code-mono',monospace; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
-<div class="container">
+<body style="font-family: 'fira-code-mono',monospace; width: 1062px; height: 1374px; overflow: hidden;">
+<div class="container" style="overflow: hidden;">
     <!-- Header stuff -->
 
     <div class="row">
@@ -72,27 +72,16 @@
                 </tr>
                 </thead>
                 <tbody>
+                {{range .Expenses}}
+                    <tr>
+                        <td>{{.Quantity}}</td>
+                        <td>{{.Description}}</td>
+                        <td class="text-right">{{.UnitPrice}}</td>
+                        <td class="text-right">{{.TotalCost}}</td>
+                    </tr>
+                {{end}}
                 <tr>
-                    <td>1</td>
-                    <td>Mark</td>
-                    <td class="text-right">$12.00</td>
-                    <td class="text-right">$12.00</td>
-                </tr>
-                <tr>
-                    <td>2</td>
-                    <td>Jacob</td>
-                    <td class="text-right">$12.00</td>
-                    <td class="text-right">$24.00</td>
-                </tr>
-                <tr>
-                    <td>3</td>
-                    <td>Larry the Bird</td>
-                    <td class="text-right">$4.00</td>
-                    <td class="text-right">$12.00</td>
-                </tr>
-                <tr>
-                    <td colspan="3">&nbsp;</td>
-                    <td colspan="1" class="text-right">Total: $48.00</td>
+                    <td colspan="4" class="text-right">Total: {{call .ExpensesSubtotal .Expenses}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -108,19 +97,19 @@
                 <tr>
                     <th scope="col">Date</th>
                     <th scope="col">Description</th>
-                    <th scope="col">Amount</th>
+                    <th scope="col" class="text-right">Amount</th>
                 </tr>
                 </thead>
                 <tbody>
+                {{range .Labours}}
+                    <tr>
+                        <td>{{.Date.Format "Jan 01, 2006"}}</td>
+                        <td>{{.Description}}</td>
+                        <td class="text-right">{{.Amount}}</td>
+                    </tr>
+                {{end}}
                 <tr>
-                    <th scope="row">1</th>
-                    <td>Mark</td>
-                    <td>Otto</td>
-                </tr>
-                <tr>
-                    <th scope="row">2</th>
-                    <td>Jacob</td>
-                    <td>Thornton</td>
+                    <td colspan="3" class="text-right">Total: {{call .LabourSubtotal .Labours}}</td>
                 </tr>
                 </tbody>
             </table>

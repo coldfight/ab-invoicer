@@ -44,7 +44,9 @@ func (r *RequestPdf) generatePdf(pdfPath string) (bool, error) {
 	f, err := os.Open(fileName)
 	if f != nil {
 		defer f.Close()
-		defer os.Remove(fileName) // @todo: Uncomment this
+
+		// @todo: Make this an option (whether or not to remove the generated HTML)
+		defer os.Remove(fileName)
 	}
 	if err != nil {
 		log.Fatal(err)
@@ -55,11 +57,18 @@ func (r *RequestPdf) generatePdf(pdfPath string) (bool, error) {
 		log.Fatal(err)
 	}
 
-	p := wkhtmltopdf.NewPageReader(f)
-	p.EnableLocalFileAccess.Set(true)
+	page := wkhtmltopdf.NewPageReader(f)
+	page.EnableLocalFileAccess.Set(true)
 
-	pdfg.AddPage(p)
+	pdfg.AddPage(page)
+	// To me this converted to width: 1062px; height: 1374px; in css
 	pdfg.PageSize.Set(wkhtmltopdf.PageSizeLetter)
+
+	// Set the margins and padding through css
+	pdfg.MarginLeft.Set(0)
+	pdfg.MarginRight.Set(0)
+	pdfg.MarginTop.Set(0)
+	pdfg.MarginBottom.Set(0)
 	pdfg.Dpi.Set(300)
 
 	err = pdfg.Create()
