@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style>
+        {{.BootstrapStylesheet}}
+
+        @font-face {
+            font-family: '{{ .Font.Name }}';
+            src: url({{ .Font.Normal.Src }}) format('woff2'),
+            url({{ .Font.Normal.Url }}) format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: '{{ .Font.Name }}';
+            src: url({{ .Font.Bold.Src }}) format('woff2'),
+            url({{ .Font.Bold.Url }}) format('woff');
+            font-weight: bold;
+            font-style: normal;
+        }
+
+    </style>
+</head>
+<body style="font-family: '{{.Font.Name}}'; width: 816px; height: 1056px; white-space: nowrap; overflow: hidden;">
+<div class="container">
+    <!-- Header stuff -->
+
+    <div class="row">
+        <div class="col">
+            <em>Mamma Info</em>
+        </div>
+        <div class="col">
+            <div class="row">
+                <div class="col">
+                    INVOICE
+                </div>
+            </div>
+            <div class="row">
+                <div class="col">
+                    INVOICE # 12345 | DATE: 05/05/2019
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Bill To -->
+    <div class="row">
+        <div class="col-2">
+            Billed To:
+        </div>
+        <div class="col">
+            Applewood Gospel Hall<br>
+            15 Dummy Street Area<br>
+            Mississauga, Ontario<br>
+            L4Z1K7
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    <div class="row">
+        <div class="col">
+            <h3>Expenses</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col" style="width:10%">Quantity</th>
+                    <th scope="col">Description</th>
+                    <th scope="col" style="width:15%" class="text-right">Unit Price</th>
+                    <th scope="col" style="width:15%" class="text-right">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td>1</td>
+                    <td>Mark</td>
+                    <td class="text-right">$12.00</td>
+                    <td class="text-right">$12.00</td>
+                </tr>
+                <tr>
+                    <td>2</td>
+                    <td>Jacob</td>
+                    <td class="text-right">$12.00</td>
+                    <td class="text-right">$24.00</td>
+                </tr>
+                <tr>
+                    <td>3</td>
+                    <td>Larry the Bird</td>
+                    <td class="text-right">$4.00</td>
+                    <td class="text-right">$12.00</td>
+                </tr>
+                <tr>
+                    <td colspan="3">&nbsp;</td>
+                    <td colspan="1" class="text-right">Total: $48.00</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Labour Table -->
+    <div class="row">
+        <div class="col">
+            <h3>Labour</h3>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Date</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Amount</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <th scope="row">1</th>
+                    <td>Mark</td>
+                    <td>Otto</td>
+                </tr>
+                <tr>
+                    <th scope="row">2</th>
+                    <td>Jacob</td>
+                    <td>Thornton</td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</body>
+</html>
