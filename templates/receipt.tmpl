@@ -43,9 +43,12 @@
             <div class="row text-center">
                 <div class="col-3"></div>
                 <div class="col-9 font-weight-bold">
-                    <div style="font-size: 80px; line-height: 1em;" class="border border-info border-2 border-bottom border-bottom-0">INVOICE</div>
-                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> 12345 | <strong>DATE:</strong>
-                        05/05/2019
+                    <div style="font-size: 80px; line-height: 1em;"
+                         class="border border-info border-2 border-bottom border-bottom-0">INVOICE
+                    </div>
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.InvoiceNumber}} | <strong>DATE:</strong>
+                        {{call .FormatDate .InvoiceDate "01/02/2006" }}
+
                     </div>
                 </div>
             </div>

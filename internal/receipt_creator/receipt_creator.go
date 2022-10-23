@@ -6,12 +6,10 @@ import (
 	"io"
 	"log"
 	"os"
-	"time"
 )
 
 const (
-	SavedDateLayout = "Jan 02, 2006"
-	TaxRate         = 0.13
+	TaxRate = 0.13
 )
 
 type Expense struct {
@@ -24,36 +22,10 @@ func (e Expense) TotalCost() float64 {
 	return float64(e.Quantity) * e.UnitPrice
 }
 
-type Date time.Time
-
-func (d *Date) UnmarshalJSON(bytes []byte) error {
-	var v interface{}
-	if err := json.Unmarshal(bytes, &v); err != nil {
-		return err
-	}
-
-	t, err := time.Parse(SavedDateLayout, v.(string))
-	if err != nil {
-		return err
-	}
-
-	*d = Date(t)
-	return nil
-}
-
-func (d *Date) MarshalJSON() ([]byte, error) {
-	// @todo: I might want to call the json.Marshal instead of manually appending the `"`
-	return []byte(`"` + time.Time(*d).Format(SavedDateLayout) + `"`), nil
-}
-
-func (d *Date) Format(layout string) string {
-	return time.Time(*d).Format(layout)
-}
-
 type Labour struct {
-	Date        Date    `json:"date"`
-	Description string  `json:"description"`
-	Amount      float64 `json:"amount"`
+	Date        tools.Date `json:"date"`
+	Description string     `json:"description"`
+	Amount      float64    `json:"amount"`
 }
 
 func (l Labour) TotalCost() float64 {
@@ -109,10 +81,12 @@ type BilledTo struct {
 }
 
 type Receipt struct {
-	Owner       Owner     `json:"owner"`
-	BilledTo    BilledTo  `json:"billedTo"`
-	ExpenseList []Expense `json:"expenseList"`
-	LabourList  []Labour  `json:"labourList"`
+	Owner         Owner      `json:"owner"`
+	BilledTo      BilledTo   `json:"billedTo"`
+	ExpenseList   []Expense  `json:"expenseList"`
+	LabourList    []Labour   `json:"labourList"`
+	InvoiceNumber int        `json:"invoiceNumber"`
+	InvoiceDate   tools.Date `json:"invoiceDate"`
 }
 
 func Create() {
@@ -136,6 +110,8 @@ func Create() {
 		LabourList                []Labour
 		BilledTo                  BilledTo
 		Owner                     Owner
+		InvoiceNumber             int
+		InvoiceDate               tools.Date
 		GetAbsPath                func(string) string
 		AsCurrency                func(float64) string
 		ExpensesSubtotal          func([]Expense) float64
@@ -143,11 +119,14 @@ func Create() {
 		ExpensesWithTaxesSubtotal func([]Expense) float64
 		LabourSubtotal            func([]Labour) float64
 		ReceiptTotal              func([]Expense, []Labour) float64
+		FormatDate                func(tools.Date, string) string
 	}{
 		ExpenseList:               receipt.ExpenseList,
 		LabourList:                receipt.LabourList,
 		BilledTo:                  receipt.BilledTo,
 		Owner:                     receipt.Owner,
+		InvoiceNumber:             receipt.InvoiceNumber,
+		InvoiceDate:               receipt.InvoiceDate,
 		GetAbsPath:                tools.FullFilePath,
 		AsCurrency:                tools.Currency,
 		ExpensesSubtotal:          ExpensesSubtotal,
@@ -155,6 +134,7 @@ func Create() {
 		ExpensesWithTaxesSubtotal: ExpensesWithTaxesSubtotal,
 		LabourSubtotal:            LabourSubtotal,
 		ReceiptTotal:              ReceiptTotal,
+		FormatDate:                tools.FormatDate,
 	}
 
 	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
