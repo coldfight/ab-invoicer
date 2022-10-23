@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"fmt"
 	"github.com/SebastiaanKlippert/go-wkhtmltopdf"
+	"github.com/coldfight/ab-invoicer/templates"
 	"html/template"
 	"log"
 	"os"
@@ -22,7 +23,7 @@ func newRequestPdf(body string) *RequestPdf {
 }
 
 func (r *RequestPdf) parseTemplate(templateFileName string, data any) error {
-	t, err := template.ParseFiles(templateFileName)
+	t, err := template.ParseFS(templates.TemplateAssets, templateFileName)
 	if err != nil {
 		return err
 	}

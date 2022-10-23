@@ -137,5 +137,5 @@ func Create() {
 		FormatDate:                tools.FormatDate,
 	}
 
-	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
+	tools.CreatePdf("receipt.tmpl", "./receipt.pdf", templateData)
 }
