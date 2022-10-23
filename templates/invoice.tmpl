@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <title>Invoicer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{GetAbsPath "./templates/assets/styles/bootstrap.css"}}">
     <style>
+        {{.BootstrapStylesheet}}
         @page {
             margin: 0;
             padding: 0;
@@ -13,23 +13,23 @@
         }
 
         @font-face {
-            font-family: 'fira-code-mono';
-            src: url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
-            url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Regular.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Regular.Url }}) format('woff');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
-            font-family: 'fira-code-mono';
-            src: url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
-            url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Bold.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Bold.Url }}) format('woff');
             font-weight: bold;
             font-style: normal;
         }
     </style>
 </head>
-<body style="font-family: 'fira-code-mono',monospace; width: 1062px; height: 1374px;" class="py-5 px-4">
+<body style="font-family: '{{.Fonts.Mono.Name}}',monospace; width: 1062px; height: 1374px;" class="py-5 px-4">
 <main role="main" class="container" style="overflow: hidden;">
     <!-- Header stuff -->
     <div class="row">

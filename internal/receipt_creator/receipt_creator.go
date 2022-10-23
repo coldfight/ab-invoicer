@@ -3,6 +3,7 @@ package receipt_creator
 import (
 	"encoding/json"
 	"github.com/coldfight/ab-invoicer/internal/tools"
+	"html/template"
 	"io"
 	"log"
 	"os"
@@ -108,21 +109,36 @@ func Create() {
 	}
 
 	templateData := struct {
-		ExpenseList   ExpenseList
-		LabourList    LabourList
-		BilledTo      BilledTo
-		Owner         Owner
-		InvoiceNumber int
-		InvoiceDate   tools.Date
-		InvoiceTotal  float64
+		ExpenseList         ExpenseList
+		LabourList          LabourList
+		BilledTo            BilledTo
+		Owner               Owner
+		InvoiceNumber       int
+		InvoiceDate         tools.Date
+		InvoiceTotal        float64
+		BootstrapStylesheet template.CSS
+		Fonts               map[string]tools.FontFamily
 	}{
-		ExpenseList:   invoice.ExpenseList,
-		LabourList:    invoice.LabourList,
-		BilledTo:      invoice.BilledTo,
-		Owner:         invoice.Owner,
-		InvoiceNumber: invoice.InvoiceNumber,
-		InvoiceDate:   invoice.InvoiceDate,
-		InvoiceTotal:  InvoiceTotal(invoice.ExpenseList, invoice.LabourList),
+		ExpenseList:         invoice.ExpenseList,
+		LabourList:          invoice.LabourList,
+		BilledTo:            invoice.BilledTo,
+		Owner:               invoice.Owner,
+		InvoiceNumber:       invoice.InvoiceNumber,
+		InvoiceDate:         invoice.InvoiceDate,
+		InvoiceTotal:        InvoiceTotal(invoice.ExpenseList, invoice.LabourList),
+		BootstrapStylesheet: tools.GetStylesheet("assets/styles/bootstrap.css"),
+		Fonts: map[string]tools.FontFamily{
+			"Normal": {
+				Name:    "fira-code",
+				Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular.ttf"),
+				Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold.ttf"),
+			},
+			"Mono": {
+				Name:    "fira-code-mono",
+				Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular-mono.ttf"),
+				Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold-mono.ttf"),
+			},
+		},
 	}
 
 	tools.CreatePdf("invoice.tmpl", "./invoice.pdf", templateData)
