@@ -40,14 +40,13 @@
             {{.Owner.PostalCode}}
         </div>
         <div class="col">
-            <div class="row">
-                <div class="col font-weight-bold text-end" style="font-size: 80px; line-height: 1em;">
-                    INVOICE
-                </div>
-            </div>
-            <div class="row">
-                <div class="col text-end">
-                    <strong>INVOICE #</strong> 12345 | <strong>DATE:</strong> 05/05/2019
+            <div class="row text-center">
+                <div class="col-3"></div>
+                <div class="col-9 font-weight-bold">
+                    <div style="font-size: 80px; line-height: 1em;" class="border border-info border-2 border-bottom border-bottom-0">INVOICE</div>
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> 12345 | <strong>DATE:</strong>
+                        05/05/2019
+                    </div>
                 </div>
             </div>
         </div>
@@ -115,7 +114,7 @@
     </div>
 
     <!-- Labour Table -->
-    <div class="row">
+    <div class="row mt-4">
         <div class="col">
             <h3><strong>Labour</strong></h3>
             <table class="table table-striped">
@@ -149,7 +148,7 @@
 
 
     <!-- Combined Totals -->
-    <div class="row">
+    <div class="row mt-3">
         <div class="col">
             <table class="table">
                 <thead style="border: 0;">
@@ -172,7 +171,7 @@
                     <td class="text-end table-dark bg-secondary">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
                 </tr>
                 <tr style="font-size: 1.5em">
-                    <td colspan="2" style="border-bottom: 0;" ></td>
+                    <td colspan="2" style="border-bottom: 0;"></td>
                     <td class="text-center table-dark"><strong>Total:</strong></td>
                     <td class="text-center table-dark" style="vertical-align: middle">
                         <strong>{{call .ReceiptTotal .ExpenseList .LabourList | call .AsCurrency}}</strong></td>
@@ -185,7 +184,7 @@
 
 </main>
 <footer style="position: absolute; bottom: 0; height: 30px; font-size: 10px;" class="mb-4">
-    <div class="container">
+    <div class="container text-secondary">
         Phone: {{.Owner.Phone}} <br>
         Email: {{.Owner.Email}}
     </div>
