@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Invoicer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{call .GetAbsPath "./templates/assets/styles/bootstrap.css"}}">
+    <link rel="stylesheet" href="{{GetAbsPath "./templates/assets/styles/bootstrap.css"}}">
     <style>
         @page {
             margin: 0;
@@ -14,16 +14,16 @@
 
         @font-face {
             font-family: 'fira-code-mono';
-            src: url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
-            url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
+            src: url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
+            url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'fira-code-mono';
-            src: url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
-            url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
+            src: url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
+            url({{GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
             font-weight: bold;
             font-style: normal;
         }
@@ -47,7 +47,7 @@
                          class="border border-info border-2 border-bottom border-bottom-0">INVOICE
                     </div>
                     <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.InvoiceNumber}} | <strong>DATE:</strong>
-                        {{call .FormatDate .InvoiceDate "01/02/2006" }}
+                        {{FormatDate .InvoiceDate "01/02/2006" }}
 
                     </div>
                 </div>
@@ -88,8 +88,8 @@
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
-                        <td class="text-end">{{call $.AsCurrency .UnitPrice}}</td>
-                        <td class="text-end">{{call $.AsCurrency .TotalCost}}</td>
+                        <td class="text-end">{{AsCurrency .UnitPrice}}</td>
+                        <td class="text-end">{{AsCurrency .TotalCost}}</td>
                     </tr>
                 {{else}}
                     <tr style="height: 50px; vertical-align: middle">
@@ -102,18 +102,18 @@
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end" style="background-color: silver">Subtotal:</td>
                     <td class="text-end" style="background-color: silver">
-                        {{call .ExpensesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                        {{call .ExpensesSubtotal .ExpenseList | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Tax:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .ExpensesTaxes .ExpenseList | call .AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{call .ExpensesTaxes .ExpenseList | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Expenses:</td>
                     <td class="text-end table-dark">
-                        {{call .ExpensesWithTaxesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                        {{call .ExpensesWithTaxesSubtotal .ExpenseList | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -138,7 +138,7 @@
                     <tr>
                         <td>{{.Date.Format "Jan 02, 2006"}}</td>
                         <td colspan="2">{{.Description}}</td>
-                        <td class="text-end">{{call $.AsCurrency .Amount}}</td>
+                        <td class="text-end">{{AsCurrency .Amount}}</td>
                     </tr>
                 {{end}}
                 </tbody>
@@ -146,7 +146,7 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Labour:</td>
-                    <td class="text-end table-dark">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
+                    <td class="text-end table-dark">{{call .LabourSubtotal .LabourList | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -170,18 +170,18 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Expenses:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .ExpensesWithTaxesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{call .ExpensesWithTaxesSubtotal .ExpenseList | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Labour:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{call .LabourSubtotal .LabourList | AsCurrency}}</td>
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;"></td>
                     <td class="text-end table-dark"><strong>Total:</strong></td>
                     <td class="text-center table-dark" style="vertical-align: middle">
-                        <strong>{{call .ReceiptTotal .ExpenseList .LabourList | call .AsCurrency}}</strong></td>
+                        <strong>{{call .ReceiptTotal .ExpenseList .LabourList | AsCurrency}}</strong></td>
                 </tr>
                 </tbody>
 

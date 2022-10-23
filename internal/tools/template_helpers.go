@@ -3,6 +3,7 @@ package tools
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"path/filepath"
 	"time"
 )
@@ -55,4 +56,12 @@ func (d *Date) Format(layout string) string {
 // Probably something to do with non-pointer Date param
 func FormatDate(d Date, layout string) string {
 	return time.Time(d).Format(layout)
+}
+
+func getGlobalTemplateFunctions() template.FuncMap {
+	return template.FuncMap{
+		"GetAbsPath": FullFilePath,
+		"AsCurrency": Currency,
+		"FormatDate": FormatDate,
+	}
 }

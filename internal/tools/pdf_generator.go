@@ -23,10 +23,14 @@ func newRequestPdf(body string) *RequestPdf {
 }
 
 func (r *RequestPdf) parseTemplate(templateFileName string, data any) error {
-	t, err := template.ParseFS(templates.TemplateAssets, templateFileName)
+	t, err := template.New(templateFileName).
+		Funcs(getGlobalTemplateFunctions()).
+		ParseFS(templates.TemplateAssets, templateFileName)
+
 	if err != nil {
 		return err
 	}
+
 	buf := new(bytes.Buffer)
 	if err = t.Execute(buf, data); err != nil {
 		return err
@@ -45,8 +49,6 @@ func (r *RequestPdf) generatePdf(pdfPath string) (bool, error) {
 	f, err := os.Open(fileName)
 	if f != nil {
 		defer f.Close()
-
-		// @todo: Make this an option (whether or not to remove the generated HTML)
 		defer os.Remove(fileName)
 	}
 	if err != nil {

@@ -112,14 +112,11 @@ func Create() {
 		Owner                     Owner
 		InvoiceNumber             int
 		InvoiceDate               tools.Date
-		GetAbsPath                func(string) string
-		AsCurrency                func(float64) string
 		ExpensesSubtotal          func([]Expense) float64
 		ExpensesTaxes             func([]Expense) float64
 		ExpensesWithTaxesSubtotal func([]Expense) float64
 		LabourSubtotal            func([]Labour) float64
 		ReceiptTotal              func([]Expense, []Labour) float64
-		FormatDate                func(tools.Date, string) string
 	}{
 		ExpenseList:               receipt.ExpenseList,
 		LabourList:                receipt.LabourList,
@@ -127,14 +124,11 @@ func Create() {
 		Owner:                     receipt.Owner,
 		InvoiceNumber:             receipt.InvoiceNumber,
 		InvoiceDate:               receipt.InvoiceDate,
-		GetAbsPath:                tools.FullFilePath,
-		AsCurrency:                tools.Currency,
 		ExpensesSubtotal:          ExpensesSubtotal,
 		ExpensesTaxes:             ExpensesTaxes,
 		ExpensesWithTaxesSubtotal: ExpensesWithTaxesSubtotal,
 		LabourSubtotal:            LabourSubtotal,
 		ReceiptTotal:              ReceiptTotal,
-		FormatDate:                tools.FormatDate,
 	}
 
 	tools.CreatePdf("receipt.tmpl", "./receipt.pdf", templateData)
