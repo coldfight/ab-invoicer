@@ -11,6 +11,7 @@
             padding: 0;
             size: 8.5in 11in;
         }
+
         @font-face {
             font-family: 'fira-code-mono';
             src: url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
@@ -41,12 +42,12 @@
         </div>
         <div class="col">
             <div class="row">
-                <div class="col font-weight-bold text-center" style="font-size: 80px; line-height: 1em;">
+                <div class="col font-weight-bold text-right" style="font-size: 80px; line-height: 1em;">
                     INVOICE
                 </div>
             </div>
             <div class="row">
-                <div class="col text-center">
+                <div class="col text-right">
                     <strong>INVOICE #</strong> 12345 | <strong>DATE:</strong> 05/05/2019
                 </div>
             </div>
@@ -71,8 +72,8 @@
     <div class="row mt-4">
         <div class="col">
             <h3>Expenses</h3>
-            <table class="table">
-                <thead class="thead-dark">
+            <table class="table table-striped">
+                <thead class="table-dark">
                 <tr>
                     <th scope="col" style="width:15%">Quantity</th>
                     <th scope="col">Description</th>
@@ -80,7 +81,7 @@
                     <th scope="col" style="width:15%" class="text-right">Amount</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                 {{range .ExpenseList}}
                     <tr>
                         <td>{{.Quantity}}</td>
@@ -102,15 +103,15 @@
     <div class="row">
         <div class="col">
             <h3>Labour</h3>
-            <table class="table">
-                <thead class="thead-dark">
+            <table class="table table-striped">
+                <thead class="table-dark">
                 <tr>
-                    <th scope="col" style="width: 15%; background-color: gray">Date</th>
+                    <th scope="col" style="width: 15%;">Date</th>
                     <th scope="col">Description</th>
                     <th scope="col" class="text-right">Amount</th>
                 </tr>
                 </thead>
-                <tbody>
+                <tbody class="table-group-divider">
                 {{range .LabourList}}
                     <tr>
                         <td>{{.Date.Format "Jan 02, 2006"}}</td>
