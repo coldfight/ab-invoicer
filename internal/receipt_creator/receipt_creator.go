@@ -2,11 +2,15 @@ package receipt_creator
 
 import (
 	"encoding/json"
-	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/tools"
 	"io"
 	"log"
 	"os"
+	"time"
+)
+
+const (
+	SavedDateLayout = "Jan 02, 2006"
 )
 
 type Expense struct {
@@ -19,26 +23,34 @@ func (e Expense) TotalCost() float64 {
 	return float64(e.Quantity) * e.UnitPrice
 }
 
-//
-//type Date time.Time
-//
-//func (d *Date) UnmarshalJSON(bytes []byte) error {
-//	var v interface{}
-//	if err := json.Unmarshal(bytes, &v); err != nil {
-//		return err
-//	}
-//
-//	t, err := time.Parse("Jan 02, 2006", v.(string))
-//	if err != nil {
-//		return err
-//	}
-//
-//	*d = Date(t)
-//	return nil
-//}
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(bytes []byte) error {
+	var v interface{}
+	if err := json.Unmarshal(bytes, &v); err != nil {
+		return err
+	}
+
+	t, err := time.Parse(SavedDateLayout, v.(string))
+	if err != nil {
+		return err
+	}
+
+	*d = Date(t)
+	return nil
+}
+
+func (d *Date) MarshalJSON() ([]byte, error) {
+	// @todo: I might want to call the json.Marshal instead of manually appending the `"`
+	return []byte(`"` + time.Time(*d).Format(SavedDateLayout) + `"`), nil
+}
+
+func (d *Date) Format(layout string) string {
+	return time.Time(*d).Format(layout)
+}
 
 type Labour struct {
-	//Date        time.Time `json:"date"`
+	Date        Date    `json:"date"`
 	Description string  `json:"description"`
 	Amount      float64 `json:"amount"`
 }
@@ -104,8 +116,6 @@ func Create() {
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(receipt)
 
 	templateData := struct {
 		ExpenseList      []Expense
