@@ -45,12 +45,14 @@ func (d *Date) MarshalJSON() ([]byte, error) {
 	return []byte(`"` + time.Time(*d).Format(SavedDateLayout) + `"`), nil
 }
 
-// @todo: Figure out why .Date.Format works for the Date in the Labour struct and not for the InvoiceDate in the Receipt struct
+// Format @todo: Figure out why .Date.Format works for the Date in the Labour struct and not for the InvoiceDate in the Receipt struct
+// Probably something to do with pointer receiver, etc
 func (d *Date) Format(layout string) string {
-	return time.Time(*d).Format(layout)
+	return FormatDate(*d, layout)
 }
 
-// @todo: Figure out why .FormatDate works for the InvoiceDate in the Receipt struct and not for the Date in the Labour struct
+// FormatDate @todo: Figure out why .FormatDate works for the InvoiceDate in the Receipt struct and not for the Date in the Labour struct
+// Probably something to do with non-pointer Date param
 func FormatDate(d Date, layout string) string {
 	return time.Time(d).Format(layout)
 }

@@ -91,6 +91,10 @@
                         <td class="text-end">{{call $.AsCurrency .UnitPrice}}</td>
                         <td class="text-end">{{call $.AsCurrency .TotalCost}}</td>
                     </tr>
+                {{else}}
+                    <tr style="height: 50px; vertical-align: middle">
+                        <td colspan="4" class="text-center">No expenses</td>
+                    </tr>
                 {{end}}
                 </tbody>
                 <tfoot style="font-size: 0.8em">
