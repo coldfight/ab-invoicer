@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Invoicer</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        {{.BootstrapStylesheet}}
+        @page {
+            margin: 0;
+            padding: 0;
+            size: 8.5in 11in;
+        }
+
+        @font-face {
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Regular.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Regular.Url }}) format('woff');
+            font-weight: normal;
+            font-style: normal;
+        }
+
+        @font-face {
+            font-family: '{{ .Fonts.Mono.Name }}';
+            src: url({{ .Fonts.Mono.Bold.Src }}) format('woff2'),
+            url({{ .Fonts.Mono.Bold.Url }}) format('woff');
+            font-weight: bold;
+            font-style: normal;
+        }
+    </style>
+</head>
+<body style="font-family: '{{.Fonts.Mono.Name}}',monospace; width: 1062px; height: 1374px;" class="py-5 px-4">
+<main role="main" class="container" style="overflow: hidden;">
+    <!-- Header stuff -->
+    <div class="row">
+        <div class="col">
+            <strong>{{.Owner.Name}}</strong><br>
+            {{.Owner.Street}}<br>
+            {{.Owner.City}}, {{.Owner.Province}}<br>
+            {{.Owner.PostalCode}}
+        </div>
+        <div class="col">
+            <div class="row text-center">
+                <div class="col-3"></div>
+                <div class="col-9 font-weight-bold">
+                    <div style="font-size: 80px; line-height: 1em;"
+                         class="border border-info border-2 border-bottom border-bottom-0">INVOICE
+                    </div>
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.InvoiceNumber}} | <strong>DATE:</strong>
+                        {{FormatDate .InvoiceDate "01/02/2006" }}
+
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <hr class="mt-4 mb-4">
+
+    <!-- Bill To -->
+    <div class="row p-2 m-0" style="background-color: #c2c2c2">
+        <div class="col-2">
+            <strong>Billed To:</strong>
+        </div>
+        <div class="col">
+            {{.BilledTo.Name}}<br>
+            {{.BilledTo.Street}}<br>
+            {{.BilledTo.City}}, {{.BilledTo.Province}}<br>
+            {{.BilledTo.PostalCode}}
+        </div>
+    </div>
+
+    <!-- Expenses Table -->
+    <div class="row mt-4">
+        <div class="col">
+            <h3><strong>Expenses</strong></h3>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col" style="width:15%">Quantity</th>
+                    <th scope="col" style="width:55%;">Description</th>
+                    <th scope="col" style="width:15%" class="text-end">Unit Price</th>
+                    <th scope="col" style="width:15%" class="text-end">Amount</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {{range .ExpenseList}}
+                    <tr>
+                        <td>{{.Quantity}}</td>
+                        <td>{{.Description}}</td>
+                        <td class="text-end">{{AsCurrency .UnitPrice}}</td>
+                        <td class="text-end">{{AsCurrency .TotalCost}}</td>
+                    </tr>
+                {{else}}
+                    <tr style="height: 50px; vertical-align: middle">
+                        <td colspan="4" class="text-center">No expenses</td>
+                    </tr>
+                {{end}}
+                </tbody>
+                <tfoot style="font-size: 0.8em">
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end" style="background-color: silver">Subtotal:</td>
+                    <td class="text-end" style="background-color: silver">
+                        {{.ExpenseList.ExpensesSubtotal | AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Tax:</td>
+                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesTaxes | AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark">Total Expenses:</td>
+                    <td class="text-end table-dark">
+                        {{.ExpenseList.ExpensesWithTaxesSubtotal  | AsCurrency}}</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+    <!-- Labour Table -->
+    <div class="row mt-4">
+        <div class="col">
+            <h3><strong>Labour</strong></h3>
+            <table class="table table-striped">
+                <thead class="table-dark">
+                <tr>
+                    <th scope="col" style="width: 15%;">Date</th>
+                    <th scope="col" style="width: 55%">Description</th>
+                    <th scope="col" style="width: 15%"></th>
+                    <th scope="col" style="width: 15%" class="text-end">Amount</th>
+                </tr>
+                </thead>
+                <tbody class="table-group-divider">
+                {{range .LabourList}}
+                    <tr>
+                        <td>{{.Date.Format "Jan 02, 2006"}}</td>
+                        <td colspan="2">{{.Description}}</td>
+                        <td class="text-end">{{AsCurrency .Amount}}</td>
+                    </tr>
+                {{end}}
+                </tbody>
+                <tfoot style="font-size: 0.8em">
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark">Total Labour:</td>
+                    <td class="text-end table-dark">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
+                </tr>
+                </tfoot>
+            </table>
+        </div>
+    </div>
+
+
+    <!-- Combined Totals -->
+    <div class="row mt-3">
+        <div class="col">
+            <table class="table">
+                <thead style="border: 0;">
+                <tr>
+                    <th scope="col" style="width:15%"></th>
+                    <th scope="col" style="width:55%;"></th>
+                    <th scope="col" style="width:15%" class="text-end"></th>
+                    <th scope="col" style="width:15%" class="text-end"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Expenses:</td>
+                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Labour:</td>
+                    <td class="text-end table-dark bg-secondary">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
+                </tr>
+                <tr style="font-size: 1.5em">
+                    <td colspan="2" style="border-bottom: 0;"></td>
+                    <td class="text-end table-dark"><strong>Total:</strong></td>
+                    <td class="text-center table-dark" style="vertical-align: middle">
+                        <strong>{{.InvoiceTotal | AsCurrency}}</strong></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</main>
+<footer style="position: absolute; bottom: 0; height: 30px; font-size: 10px;" class="mb-4">
+    <div class="container text-secondary">
+        Phone: {{.Owner.Phone}} <br>
+        Email: {{.Owner.Email}}
+    </div>
+</footer>
+</body>
+</html>

@@ -3,6 +3,7 @@ package receipt_creator
 import (
 	"encoding/json"
 	"github.com/coldfight/ab-invoicer/internal/tools"
+	"html/template"
 	"io"
 	"log"
 	"os"
@@ -17,6 +18,7 @@ type Expense struct {
 	Description string  `json:"description"`
 	UnitPrice   float64 `json:"unitPrice"`
 }
+type ExpenseList []Expense
 
 func (e Expense) TotalCost() float64 {
 	return float64(e.Quantity) * e.UnitPrice
@@ -27,38 +29,39 @@ type Labour struct {
 	Description string     `json:"description"`
 	Amount      float64    `json:"amount"`
 }
+type LabourList []Labour
 
 func (l Labour) TotalCost() float64 {
 	return l.Amount
 }
 
-func ExpensesSubtotal(es []Expense) float64 {
+func (el ExpenseList) ExpensesSubtotal() float64 {
 	sum := 0.0
-	for _, e := range es {
+	for _, e := range el {
 		sum += e.TotalCost()
 	}
 	return sum
 }
 
-func ExpensesTaxes(es []Expense) float64 {
-	return ExpensesSubtotal(es) * TaxRate
+func (el ExpenseList) ExpensesTaxes() float64 {
+	return el.ExpensesSubtotal() * TaxRate
 }
 
 // @todo: Refactor this so we're caching the results and sending them to the template rather than calling the functions in the template
-func ExpensesWithTaxesSubtotal(es []Expense) float64 {
-	return ExpensesSubtotal(es) + ExpensesTaxes(es)
+func (el ExpenseList) ExpensesWithTaxesSubtotal() float64 {
+	return el.ExpensesSubtotal() + el.ExpensesTaxes()
 }
 
-func LabourSubtotal(ls []Labour) float64 {
+func (ll LabourList) LabourSubtotal() float64 {
 	sum := 0.0
-	for _, l := range ls {
+	for _, l := range ll {
 		sum += l.TotalCost()
 	}
 	return sum
 }
 
-func ReceiptTotal(es []Expense, ls []Labour) float64 {
-	return ExpensesWithTaxesSubtotal(es) + LabourSubtotal(ls)
+func InvoiceTotal(el ExpenseList, ll LabourList) float64 {
+	return el.ExpensesWithTaxesSubtotal() + ll.LabourSubtotal()
 }
 
 type Owner struct {
@@ -80,13 +83,13 @@ type BilledTo struct {
 	Phone      string `json:"phone"`
 }
 
-type Receipt struct {
-	Owner         Owner      `json:"owner"`
-	BilledTo      BilledTo   `json:"billedTo"`
-	ExpenseList   []Expense  `json:"expenseList"`
-	LabourList    []Labour   `json:"labourList"`
-	InvoiceNumber int        `json:"invoiceNumber"`
-	InvoiceDate   tools.Date `json:"invoiceDate"`
+type Invoice struct {
+	Owner         Owner       `json:"owner"`
+	BilledTo      BilledTo    `json:"billedTo"`
+	ExpenseList   ExpenseList `json:"expenseList"`
+	LabourList    LabourList  `json:"labourList"`
+	InvoiceNumber int         `json:"invoiceNumber"`
+	InvoiceDate   tools.Date  `json:"invoiceDate"`
 }
 
 func Create() {
@@ -99,43 +102,44 @@ func Create() {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	var receipt Receipt
-	err = json.Unmarshal(byteValue, &receipt)
+	var invoice Invoice
+	err = json.Unmarshal(byteValue, &invoice)
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	templateData := struct {
-		ExpenseList               []Expense
-		LabourList                []Labour
-		BilledTo                  BilledTo
-		Owner                     Owner
-		InvoiceNumber             int
-		InvoiceDate               tools.Date
-		GetAbsPath                func(string) string
-		AsCurrency                func(float64) string
-		ExpensesSubtotal          func([]Expense) float64
-		ExpensesTaxes             func([]Expense) float64
-		ExpensesWithTaxesSubtotal func([]Expense) float64
-		LabourSubtotal            func([]Labour) float64
-		ReceiptTotal              func([]Expense, []Labour) float64
-		FormatDate                func(tools.Date, string) string
+		ExpenseList         ExpenseList
+		LabourList          LabourList
+		BilledTo            BilledTo
+		Owner               Owner
+		InvoiceNumber       int
+		InvoiceDate         tools.Date
+		InvoiceTotal        float64
+		BootstrapStylesheet template.CSS
+		Fonts               map[string]tools.FontFamily
 	}{
-		ExpenseList:               receipt.ExpenseList,
-		LabourList:                receipt.LabourList,
-		BilledTo:                  receipt.BilledTo,
-		Owner:                     receipt.Owner,
-		InvoiceNumber:             receipt.InvoiceNumber,
-		InvoiceDate:               receipt.InvoiceDate,
-		GetAbsPath:                tools.FullFilePath,
-		AsCurrency:                tools.Currency,
-		ExpensesSubtotal:          ExpensesSubtotal,
-		ExpensesTaxes:             ExpensesTaxes,
-		ExpensesWithTaxesSubtotal: ExpensesWithTaxesSubtotal,
-		LabourSubtotal:            LabourSubtotal,
-		ReceiptTotal:              ReceiptTotal,
-		FormatDate:                tools.FormatDate,
+		ExpenseList:         invoice.ExpenseList,
+		LabourList:          invoice.LabourList,
+		BilledTo:            invoice.BilledTo,
+		Owner:               invoice.Owner,
+		InvoiceNumber:       invoice.InvoiceNumber,
+		InvoiceDate:         invoice.InvoiceDate,
+		InvoiceTotal:        InvoiceTotal(invoice.ExpenseList, invoice.LabourList),
+		BootstrapStylesheet: tools.GetStylesheet("assets/styles/bootstrap.css"),
+		Fonts: map[string]tools.FontFamily{
+			"Normal": {
+				Name:    "fira-code",
+				Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular.ttf"),
+				Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold.ttf"),
+			},
+			"Mono": {
+				Name:    "fira-code-mono",
+				Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular-mono.ttf"),
+				Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold-mono.ttf"),
+			},
+		},
 	}
 
-	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
+	tools.CreatePdf("invoice.tmpl", "./invoice.pdf", templateData)
 }
