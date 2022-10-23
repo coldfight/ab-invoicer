@@ -1,7 +1,7 @@
 package main
 
-import "github.com/coldfight/ab-invoicer/internal/receipt_creator"
+import "github.com/coldfight/ab-invoicer/internal/invoice_generator"
 
 func main() {
-	receipt_creator.Create()
+	invoice_generator.NewInvoice()
 }
