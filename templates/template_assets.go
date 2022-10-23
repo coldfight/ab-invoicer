@@ -5,5 +5,5 @@ import (
 )
 
 //go:embed assets
-//go:embed receipt.tmpl
+//go:embed invoice.tmpl
 var TemplateAssets embed.FS

@@ -102,18 +102,18 @@
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end" style="background-color: silver">Subtotal:</td>
                     <td class="text-end" style="background-color: silver">
-                        {{call .ExpensesSubtotal .ExpenseList | AsCurrency}}</td>
+                        {{.ExpenseList.ExpensesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Tax:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .ExpensesTaxes .ExpenseList | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesTaxes | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Expenses:</td>
                     <td class="text-end table-dark">
-                        {{call .ExpensesWithTaxesSubtotal .ExpenseList | AsCurrency}}</td>
+                        {{.ExpenseList.ExpensesWithTaxesSubtotal  | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -146,7 +146,7 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Labour:</td>
-                    <td class="text-end table-dark">{{call .LabourSubtotal .LabourList | AsCurrency}}</td>
+                    <td class="text-end table-dark">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -170,12 +170,12 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Expenses:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .ExpensesWithTaxesSubtotal .ExpenseList | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Labour:</td>
-                    <td class="text-end table-dark bg-secondary">{{call .LabourSubtotal .LabourList | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;"></td>
