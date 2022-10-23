@@ -91,7 +91,7 @@
                     </tr>
                 {{end}}
                 </tbody>
-                <tfoot>
+                <tfoot style="font-size: 0.8em">
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end" style="background-color: silver">Subtotal:</td>
@@ -105,7 +105,7 @@
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
-                    <td class="text-end table-dark">Total:</td>
+                    <td class="text-end table-dark">Total Expenses:</td>
                     <td class="text-end table-dark">
                         {{call .ExpensesWithTaxesSubtotal .ExpenseList | call .AsCurrency}}</td>
                 </tr>
@@ -136,10 +136,10 @@
                     </tr>
                 {{end}}
                 </tbody>
-                <tfoot>
+                <tfoot style="font-size: 0.8em">
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
-                    <td class="text-end table-dark">Total:</td>
+                    <td class="text-end table-dark">Total Labour:</td>
                     <td class="text-end table-dark">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
                 </tr>
                 </tfoot>
@@ -173,7 +173,7 @@
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;" ></td>
-                    <td class="text-center table-dark"><strong>Receipt Total:</strong></td>
+                    <td class="text-center table-dark"><strong>Total:</strong></td>
                     <td class="text-center table-dark" style="vertical-align: middle">
                         <strong>{{call .ReceiptTotal .ExpenseList .LabourList | call .AsCurrency}}</strong></td>
                 </tr>
