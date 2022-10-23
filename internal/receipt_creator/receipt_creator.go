@@ -59,7 +59,7 @@ func (ll LabourList) LabourSubtotal() float64 {
 	return sum
 }
 
-func ReceiptTotal(el ExpenseList, ll LabourList) float64 {
+func InvoiceTotal(el ExpenseList, ll LabourList) float64 {
 	return el.ExpensesWithTaxesSubtotal() + ll.LabourSubtotal()
 }
 
@@ -114,7 +114,7 @@ func Create() {
 		Owner         Owner
 		InvoiceNumber int
 		InvoiceDate   tools.Date
-		ReceiptTotal  func(ExpenseList, LabourList) float64
+		InvoiceTotal  float64
 	}{
 		ExpenseList:   invoice.ExpenseList,
 		LabourList:    invoice.LabourList,
@@ -122,7 +122,7 @@ func Create() {
 		Owner:         invoice.Owner,
 		InvoiceNumber: invoice.InvoiceNumber,
 		InvoiceDate:   invoice.InvoiceDate,
-		ReceiptTotal:  ReceiptTotal,
+		InvoiceTotal:  InvoiceTotal(invoice.ExpenseList, invoice.LabourList),
 	}
 
 	tools.CreatePdf("invoice.tmpl", "./invoice.pdf", templateData)
