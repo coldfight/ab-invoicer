@@ -42,12 +42,12 @@
         </div>
         <div class="col">
             <div class="row">
-                <div class="col font-weight-bold text-right" style="font-size: 80px; line-height: 1em;">
+                <div class="col font-weight-bold text-end" style="font-size: 80px; line-height: 1em;">
                     INVOICE
                 </div>
             </div>
             <div class="row">
-                <div class="col text-right">
+                <div class="col text-end">
                     <strong>INVOICE #</strong> 12345 | <strong>DATE:</strong> 05/05/2019
                 </div>
             </div>
@@ -77,8 +77,8 @@
                 <tr>
                     <th scope="col" style="width:15%">Quantity</th>
                     <th scope="col">Description</th>
-                    <th scope="col" style="width:15%" class="text-right">Unit Price</th>
-                    <th scope="col" style="width:15%" class="text-right">Amount</th>
+                    <th scope="col" style="width:15%" class="text-end">Unit Price</th>
+                    <th scope="col" style="width:15%" class="text-end">Amount</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -86,15 +86,17 @@
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
-                        <td class="text-right">{{call $.AsCurrency .UnitPrice}}</td>
-                        <td class="text-right">{{call $.AsCurrency .TotalCost}}</td>
+                        <td class="text-end">{{call $.AsCurrency .UnitPrice}}</td>
+                        <td class="text-end">{{call $.AsCurrency .TotalCost}}</td>
                     </tr>
                 {{end}}
+                </tbody>
+                <tfoot style="background-color: darkgray">
                 <tr>
-                    <td colspan="4" class="text-right">
+                    <td colspan="4" class="text-end">
                         Total: {{call .ExpensesSubtotal .ExpenseList | call .AsCurrency}}</td>
                 </tr>
-                </tbody>
+                </tfoot>
             </table>
         </div>
     </div>
@@ -108,7 +110,7 @@
                 <tr>
                     <th scope="col" style="width: 15%;">Date</th>
                     <th scope="col">Description</th>
-                    <th scope="col" class="text-right">Amount</th>
+                    <th scope="col" class="text-end">Amount</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
@@ -116,14 +118,16 @@
                     <tr>
                         <td>{{.Date.Format "Jan 02, 2006"}}</td>
                         <td>{{.Description}}</td>
-                        <td class="text-right">{{call $.AsCurrency .Amount}}</td>
+                        <td class="text-end">{{call $.AsCurrency .Amount}}</td>
                     </tr>
                 {{end}}
+                </tbody>
+                <tfoot style="background-color: darkgray">
                 <tr>
-                    <td colspan="3" class="text-right">
+                    <td colspan="3" class="text-end">
                         Total: {{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
                 </tr>
-                </tbody>
+                </tfoot>
             </table>
         </div>
     </div>
