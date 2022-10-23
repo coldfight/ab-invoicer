@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Invoicer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{call .GetAbsPath "./templates/assets/bootstrap.css"}}">
+    <link rel="stylesheet" href="{{call .GetAbsPath "./templates/assets/styles/bootstrap.css"}}">
     <style>
         @page {
             margin: 0;
@@ -179,7 +179,7 @@
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;"></td>
-                    <td class="text-center table-dark"><strong>Total:</strong></td>
+                    <td class="text-end table-dark"><strong>Total:</strong></td>
                     <td class="text-center table-dark" style="vertical-align: middle">
                         <strong>{{call .ReceiptTotal .ExpenseList .LabourList | call .AsCurrency}}</strong></td>
                 </tr>
