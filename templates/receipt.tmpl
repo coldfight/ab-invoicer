@@ -147,7 +147,41 @@
         </div>
     </div>
 
+
     <!-- Combined Totals -->
+    <div class="row">
+        <div class="col">
+            <table class="table">
+                <thead style="border: 0;">
+                <tr>
+                    <th scope="col" style="width:15%"></th>
+                    <th scope="col" style="width:55%;"></th>
+                    <th scope="col" style="width:15%" class="text-end"></th>
+                    <th scope="col" style="width:15%" class="text-end"></th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Expenses:</td>
+                    <td class="text-end table-dark bg-secondary">{{call .ExpensesWithTaxesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Labour:</td>
+                    <td class="text-end table-dark bg-secondary">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
+                </tr>
+                <tr style="font-size: 1.5em">
+                    <td colspan="2" style="border-bottom: 0;" ></td>
+                    <td class="text-center table-dark"><strong>Receipt Total:</strong></td>
+                    <td class="text-center table-dark" style="vertical-align: middle">
+                        <strong>{{call .ReceiptTotal .ExpenseList .LabourList | call .AsCurrency}}</strong></td>
+                </tr>
+                </tbody>
+
+            </table>
+        </div>
+    </div>
 
 </main>
 <footer style="position: absolute; bottom: 0; height: 30px; font-size: 10px;" class="mb-4">

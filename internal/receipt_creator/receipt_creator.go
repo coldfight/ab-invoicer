@@ -85,6 +85,10 @@ func LabourSubtotal(ls []Labour) float64 {
 	return sum
 }
 
+func ReceiptTotal(es []Expense, ls []Labour) float64 {
+	return ExpensesWithTaxesSubtotal(es) + LabourSubtotal(ls)
+}
+
 type Owner struct {
 	Name       string `json:"name"`
 	Street     string `json:"street"`
@@ -138,6 +142,7 @@ func Create() {
 		ExpensesTaxes             func([]Expense) float64
 		ExpensesWithTaxesSubtotal func([]Expense) float64
 		LabourSubtotal            func([]Labour) float64
+		ReceiptTotal              func([]Expense, []Labour) float64
 	}{
 		ExpenseList:               receipt.ExpenseList,
 		LabourList:                receipt.LabourList,
@@ -149,6 +154,7 @@ func Create() {
 		ExpensesTaxes:             ExpensesTaxes,
 		ExpensesWithTaxesSubtotal: ExpensesWithTaxesSubtotal,
 		LabourSubtotal:            LabourSubtotal,
+		ReceiptTotal:              ReceiptTotal,
 	}
 
 	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
