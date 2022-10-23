@@ -1,24 +1,46 @@
 package receipt_creator
 
 import (
+	"encoding/json"
+	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/tools"
-	"time"
+	"io"
+	"log"
+	"os"
 )
 
 type Expense struct {
-	Quantity    int
-	Description string
-	UnitPrice   float64
+	Quantity    int     `json:"quantity"`
+	Description string  `json:"description"`
+	UnitPrice   float64 `json:"unitPrice"`
 }
 
 func (e Expense) TotalCost() float64 {
 	return float64(e.Quantity) * e.UnitPrice
 }
 
+//
+//type Date time.Time
+//
+//func (d *Date) UnmarshalJSON(bytes []byte) error {
+//	var v interface{}
+//	if err := json.Unmarshal(bytes, &v); err != nil {
+//		return err
+//	}
+//
+//	t, err := time.Parse("Jan 02, 2006", v.(string))
+//	if err != nil {
+//		return err
+//	}
+//
+//	*d = Date(t)
+//	return nil
+//}
+
 type Labour struct {
-	Date        time.Time
-	Description string
-	Amount      float64
+	//Date        time.Time `json:"date"`
+	Description string  `json:"description"`
+	Amount      float64 `json:"amount"`
 }
 
 func (l Labour) TotalCost() float64 {
@@ -41,89 +63,53 @@ func LabourSubtotal(ls []Labour) float64 {
 	return sum
 }
 
-type BilledTo struct {
-	Name       string
-	Street     string
-	City       string
-	Province   string
-	PostalCode string
-	Phone      string
+type Owner struct {
+	Name       string `json:"name"`
+	Street     string `json:"street"`
+	City       string `json:"city"`
+	Province   string `json:"province"`
+	PostalCode string `json:"postalCode"`
+	Phone      string `json:"phone"`
+	Email      string `json:"email"`
 }
 
-type Owner struct {
-	Name       string
-	Street     string
-	City       string
-	Province   string
-	PostalCode string
-	Phone      string
-	Email      string
+type BilledTo struct {
+	Name       string `json:"name"`
+	Street     string `json:"street"`
+	City       string `json:"city"`
+	Province   string `json:"province"`
+	PostalCode string `json:"postalCode"`
+	Phone      string `json:"phone"`
+}
+
+type Receipt struct {
+	Owner       Owner     `json:"owner"`
+	BilledTo    BilledTo  `json:"billedTo"`
+	ExpenseList []Expense `json:"expenseList"`
+	LabourList  []Labour  `json:"labourList"`
 }
 
 func Create() {
-	expenses := []Expense{
-		{
-			Quantity:    3,
-			Description: "Lysol Aerosol",
-			UnitPrice:   8,
-		},
-		{
-			Quantity:    1,
-			Description: "Windex",
-			UnitPrice:   8,
-		},
-		{
-			Quantity:    2,
-			Description: "Toilet Bowl Cleaner",
-			UnitPrice:   3.50,
-		},
+	// Temp read from db.json file
+	jsonFile, err := os.Open("./storage/db.json")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer jsonFile.Close()
+
+	byteValue, _ := io.ReadAll(jsonFile)
+
+	var receipt Receipt
+	err = json.Unmarshal(byteValue, &receipt)
+	if err != nil {
+		log.Fatal(err)
 	}
 
-	labours := []Labour{
-		{
-			Date:        time.Now(),
-			Description: "Sanitize, clean, dust, vacuum, take out garbage, window cleaning",
-			Amount:      100,
-		},
-		{
-			Date:        time.Now(),
-			Description: "Sanitize, clean, dust, vacuum, take out garbage, window cleaning",
-			Amount:      100,
-		},
-		{
-			Date:        time.Now(),
-			Description: "Sanitize, clean, dust, vacuum, take out garbage, window cleaning",
-			Amount:      100,
-		},
-		{
-			Date:        time.Now(),
-			Description: "Sanitize, clean, dust, vacuum, take out garbage, window cleaning",
-			Amount:      100,
-		},
-	}
-
-	billedTo := BilledTo{
-		Name:       "Applewood Gospel Hall",
-		Street:     "15 Dummy Street Area",
-		City:       "Mississauga",
-		Province:   "Ontario",
-		PostalCode: "M4T 2T1",
-		Phone:      "416.555.5555",
-	}
-
-	owner := Owner{
-		Name:       "My name",
-		Street:     "555 Mississauga Valley Blvd.",
-		City:       "Mississauga",
-		Province:   "Ontario",
-		PostalCode: "M4T 2T1",
-		Phone:      "416.555.5456",
-		Email:      "myemail@example.com",
-	}
+	fmt.Println(receipt)
 
 	templateData := struct {
-		Expenses         []Expense
-		Labours          []Labour
+		ExpenseList      []Expense
+		LabourList       []Labour
 		BilledTo         BilledTo
 		Owner            Owner
 		GetAbsPath       func(string) string
@@ -131,10 +117,10 @@ func Create() {
 		ExpensesSubtotal func([]Expense) float64
 		LabourSubtotal   func([]Labour) float64
 	}{
-		Expenses:         expenses,
-		Labours:          labours,
-		BilledTo:         billedTo,
-		Owner:            owner,
+		ExpenseList:      receipt.ExpenseList,
+		LabourList:       receipt.LabourList,
+		BilledTo:         receipt.BilledTo,
+		Owner:            receipt.Owner,
 		GetAbsPath:       tools.FullFilePath,
 		AsCurrency:       tools.Currency,
 		ExpensesSubtotal: ExpensesSubtotal,

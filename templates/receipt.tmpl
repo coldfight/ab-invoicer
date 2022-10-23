@@ -29,19 +29,19 @@
 
     <div class="row">
         <div class="col">
-            {{.Owner.Name}}<br>
+            <strong>{{.Owner.Name}}</strong><br>
             {{.Owner.Street}}<br>
             {{.Owner.City}}, {{.Owner.Province}}<br>
             {{.Owner.PostalCode}}
         </div>
         <div class="col">
             <div class="row">
-                <div class="col font-weight-bold">
+                <div class="col font-weight-bold text-center" style="font-size: 80px; line-height: 1em;">
                     INVOICE
                 </div>
             </div>
             <div class="row">
-                <div class="col">
+                <div class="col text-center">
                     <strong>INVOICE #</strong> 12345 | <strong>DATE:</strong> 05/05/2019
                 </div>
             </div>
@@ -50,9 +50,9 @@
 
     <hr>
     <!-- Bill To -->
-    <div class="row">
+    <div class="row p-2" style="background-color: #c2c2c2">
         <div class="col-2">
-            Billed To:
+            <strong>Billed To:</strong>
         </div>
         <div class="col">
             {{.BilledTo.Name}}<br>
@@ -63,7 +63,7 @@
     </div>
 
     <!-- Expenses Table -->
-    <div class="row">
+    <div class="row mt-4">
         <div class="col">
             <h3>Expenses</h3>
             <table class="table">
@@ -76,7 +76,7 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{range .Expenses}}
+                {{range .ExpenseList}}
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
@@ -86,7 +86,7 @@
                 {{end}}
                 <tr>
                     <td colspan="4" class="text-right">
-                        Total: {{call .ExpensesSubtotal .Expenses | call .AsCurrency}}</td>
+                        Total: {{call .ExpensesSubtotal .ExpenseList | call .AsCurrency}}</td>
                 </tr>
                 </tbody>
             </table>
@@ -106,15 +106,19 @@
                 </tr>
                 </thead>
                 <tbody>
-                {{range .Labours}}
+                {{range .LabourList}}
                     <tr>
-                        <td>{{.Date.Format "Jan 01, 2006"}}</td>
+                        <td>
+                            Jan 01, 2006
+                            {{/*                            {{.Date.Format "Jan 01, 2006"}}*/}}
+                        </td>
                         <td>{{.Description}}</td>
                         <td class="text-right">{{call $.AsCurrency .Amount}}</td>
                     </tr>
                 {{end}}
                 <tr>
-                    <td colspan="3" class="text-right">Total: {{call .LabourSubtotal .Labours | call .AsCurrency}}</td>
+                    <td colspan="3" class="text-right">
+                        Total: {{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
                 </tr>
                 </tbody>
             </table>
