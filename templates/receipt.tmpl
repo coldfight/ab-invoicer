@@ -32,7 +32,6 @@
 <body style="font-family: 'fira-code-mono',monospace; width: 1062px; height: 1374px;" class="py-5 px-4">
 <main role="main" class="container" style="overflow: hidden;">
     <!-- Header stuff -->
-
     <div class="row">
         <div class="col">
             <strong>{{.Owner.Name}}</strong><br>
@@ -55,6 +54,7 @@
     </div>
 
     <hr class="mt-4 mb-4">
+
     <!-- Bill To -->
     <div class="row p-2 m-0" style="background-color: #c2c2c2">
         <div class="col-2">
@@ -71,12 +71,12 @@
     <!-- Expenses Table -->
     <div class="row mt-4">
         <div class="col">
-            <h3>Expenses</h3>
+            <h3><strong>Expenses</strong></h3>
             <table class="table table-striped">
                 <thead class="table-dark">
                 <tr>
                     <th scope="col" style="width:15%">Quantity</th>
-                    <th scope="col">Description</th>
+                    <th scope="col" style="width:55%;">Description</th>
                     <th scope="col" style="width:15%" class="text-end">Unit Price</th>
                     <th scope="col" style="width:15%" class="text-end">Amount</th>
                 </tr>
@@ -91,10 +91,23 @@
                     </tr>
                 {{end}}
                 </tbody>
-                <tfoot style="background-color: darkgray">
+                <tfoot>
                 <tr>
-                    <td colspan="4" class="text-end">
-                        Total: {{call .ExpensesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end" style="background-color: silver">Subtotal:</td>
+                    <td class="text-end" style="background-color: silver">
+                        {{call .ExpensesSubtotal .ExpenseList | call .AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark bg-secondary">Tax:</td>
+                    <td class="text-end table-dark bg-secondary">{{call .ExpensesTaxes .ExpenseList | call .AsCurrency}}</td>
+                </tr>
+                <tr>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark">Total:</td>
+                    <td class="text-end table-dark">
+                        {{call .ExpensesWithTaxesSubtotal .ExpenseList | call .AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -104,33 +117,38 @@
     <!-- Labour Table -->
     <div class="row">
         <div class="col">
-            <h3>Labour</h3>
+            <h3><strong>Labour</strong></h3>
             <table class="table table-striped">
                 <thead class="table-dark">
                 <tr>
                     <th scope="col" style="width: 15%;">Date</th>
-                    <th scope="col">Description</th>
-                    <th scope="col" class="text-end">Amount</th>
+                    <th scope="col" style="width: 55%">Description</th>
+                    <th scope="col" style="width: 15%"></th>
+                    <th scope="col" style="width: 15%" class="text-end">Amount</th>
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
                 {{range .LabourList}}
                     <tr>
                         <td>{{.Date.Format "Jan 02, 2006"}}</td>
-                        <td>{{.Description}}</td>
+                        <td colspan="2">{{.Description}}</td>
                         <td class="text-end">{{call $.AsCurrency .Amount}}</td>
                     </tr>
                 {{end}}
                 </tbody>
-                <tfoot style="background-color: darkgray">
+                <tfoot>
                 <tr>
-                    <td colspan="3" class="text-end">
-                        Total: {{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
+                    <td colspan="2" style="border-bottom: 0"></td>
+                    <td class="text-end table-dark">Total:</td>
+                    <td class="text-end table-dark">{{call .LabourSubtotal .LabourList | call .AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
         </div>
     </div>
+
+    <!-- Combined Totals -->
+
 </main>
 <footer style="position: absolute; bottom: 0; height: 30px; font-size: 10px;" class="mb-4">
     <div class="container">

@@ -11,6 +11,7 @@ import (
 
 const (
 	SavedDateLayout = "Jan 02, 2006"
+	TaxRate         = 0.13
 )
 
 type Expense struct {
@@ -67,6 +68,15 @@ func ExpensesSubtotal(es []Expense) float64 {
 	return sum
 }
 
+func ExpensesTaxes(es []Expense) float64 {
+	return ExpensesSubtotal(es) * TaxRate
+}
+
+// @todo: Refactor this so we're caching the results and sending them to the template rather than calling the functions in the template
+func ExpensesWithTaxesSubtotal(es []Expense) float64 {
+	return ExpensesSubtotal(es) + ExpensesTaxes(es)
+}
+
 func LabourSubtotal(ls []Labour) float64 {
 	sum := 0.0
 	for _, l := range ls {
@@ -118,23 +128,27 @@ func Create() {
 	}
 
 	templateData := struct {
-		ExpenseList      []Expense
-		LabourList       []Labour
-		BilledTo         BilledTo
-		Owner            Owner
-		GetAbsPath       func(string) string
-		AsCurrency       func(float64) string
-		ExpensesSubtotal func([]Expense) float64
-		LabourSubtotal   func([]Labour) float64
+		ExpenseList               []Expense
+		LabourList                []Labour
+		BilledTo                  BilledTo
+		Owner                     Owner
+		GetAbsPath                func(string) string
+		AsCurrency                func(float64) string
+		ExpensesSubtotal          func([]Expense) float64
+		ExpensesTaxes             func([]Expense) float64
+		ExpensesWithTaxesSubtotal func([]Expense) float64
+		LabourSubtotal            func([]Labour) float64
 	}{
-		ExpenseList:      receipt.ExpenseList,
-		LabourList:       receipt.LabourList,
-		BilledTo:         receipt.BilledTo,
-		Owner:            receipt.Owner,
-		GetAbsPath:       tools.FullFilePath,
-		AsCurrency:       tools.Currency,
-		ExpensesSubtotal: ExpensesSubtotal,
-		LabourSubtotal:   LabourSubtotal,
+		ExpenseList:               receipt.ExpenseList,
+		LabourList:                receipt.LabourList,
+		BilledTo:                  receipt.BilledTo,
+		Owner:                     receipt.Owner,
+		GetAbsPath:                tools.FullFilePath,
+		AsCurrency:                tools.Currency,
+		ExpensesSubtotal:          ExpensesSubtotal,
+		ExpensesTaxes:             ExpensesTaxes,
+		ExpensesWithTaxesSubtotal: ExpensesWithTaxesSubtotal,
+		LabourSubtotal:            LabourSubtotal,
 	}
 
 	tools.CreatePdf("./templates/receipt.tmpl", "./storage/receipt.pdf", templateData)
