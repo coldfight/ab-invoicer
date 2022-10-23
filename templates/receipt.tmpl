@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <title>Invoicer</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="{{call .GetAbsPath "./assets/bootstrap.css"}}">
+    <link rel="stylesheet" href="{{call .GetAbsPath "./templates/assets/bootstrap.css"}}">
     <style>
         @page {
             margin: 0;
@@ -14,16 +14,16 @@
 
         @font-face {
             font-family: 'fira-code-mono';
-            src: url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
-            url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
+            src: url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff2'),
+            url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-regular-mono.ttf"}}) format('woff');
             font-weight: normal;
             font-style: normal;
         }
 
         @font-face {
             font-family: 'fira-code-mono';
-            src: url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
-            url({{call .GetAbsPath "./assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
+            src: url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff2'),
+            url({{call .GetAbsPath "./templates/assets/fonts/FiraCode/fira-code-bold-mono.ttf"}}) format('woff');
             font-weight: bold;
             font-style: normal;
         }
