@@ -47,7 +47,7 @@
                          class="border border-info border-2 border-bottom border-bottom-0">INVOICE
                     </div>
                     <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.InvoiceNumber}} | <strong>DATE:</strong>
-                        {{FormatDate .InvoiceDate "01/02/2006" }}
+                        {{.InvoiceDate.Format "01/02/2006" }}
 
                     </div>
                 </div>

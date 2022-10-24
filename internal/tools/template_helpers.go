@@ -8,7 +8,6 @@ import (
 	"html/template"
 	"log"
 	"net/http"
-	"path/filepath"
 	"time"
 )
 
@@ -16,16 +15,16 @@ const (
 	SavedDateLayout = "Jan 02, 2006"
 )
 
-func FullFilePath(relativePath string) string {
-	abs, err := filepath.Abs(relativePath)
-	if err != nil {
-		return ""
-	}
-	return abs
+// asCurrency - converts a float to a currency string
+func asCurrency(num float64) string {
+	return fmt.Sprintf("$%.2f", num)
 }
 
-func Currency(num float64) string {
-	return fmt.Sprintf("$%.2f", num)
+// getGlobalTemplateFunctions - returns a FuncMap of global template functions
+func getGlobalTemplateFunctions() template.FuncMap {
+	return template.FuncMap{
+		"AsCurrency": asCurrency,
+	}
 }
 
 type Date time.Time
@@ -45,29 +44,12 @@ func (d *Date) UnmarshalJSON(bytes []byte) error {
 	return nil
 }
 
-func (d *Date) MarshalJSON() ([]byte, error) {
-	// @todo: I might want to call the json.Marshal instead of manually appending the `"`
-	return []byte(`"` + time.Time(*d).Format(SavedDateLayout) + `"`), nil
+func (d Date) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(d).Format(SavedDateLayout))
 }
 
-// Format @todo: Figure out why .Date.Format works for the Date in the Labour struct and not for the InvoiceDate in the Receipt struct
-// Probably something to do with pointer receiver, etc
-func (d *Date) Format(layout string) string {
-	return FormatDate(*d, layout)
-}
-
-// FormatDate @todo: Figure out why .FormatDate works for the InvoiceDate in the Receipt struct and not for the Date in the Labour struct
-// Probably something to do with non-pointer Date param
-func FormatDate(d Date, layout string) string {
+func (d Date) Format(layout string) string {
 	return time.Time(d).Format(layout)
-}
-
-func getGlobalTemplateFunctions() template.FuncMap {
-	return template.FuncMap{
-		"GetAbsPath": FullFilePath,
-		"AsCurrency": Currency,
-		"FormatDate": FormatDate,
-	}
 }
 
 type Font struct {

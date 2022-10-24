@@ -137,5 +137,5 @@ func NewInvoice() {
 		Fonts:               fontMap,
 	}
 
-	tools.CreatePdf("invoice.tmpl", "./invoice.pdf", templateData)
+	tools.CreatePdf("invoice.tmpl", "./storage/invoice.pdf", templateData)
 }
