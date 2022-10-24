@@ -2,16 +2,44 @@ package invoice_generator
 
 import (
 	"encoding/json"
-	"github.com/coldfight/ab-invoicer/internal/tools"
+	"github.com/coldfight/ab-invoicer/internal/tools/pdf_generator"
+	templateHelpers "github.com/coldfight/ab-invoicer/internal/tools/template_helpers"
 	"html/template"
 	"io"
 	"log"
 	"os"
+	"time"
 )
 
 const (
-	TaxRate = 0.13
+	TaxRate         = 0.13
+	SavedDateLayout = "Jan 02, 2006"
 )
+
+type Date time.Time
+
+func (d *Date) UnmarshalJSON(bytes []byte) error {
+	var v interface{}
+	if err := json.Unmarshal(bytes, &v); err != nil {
+		return err
+	}
+
+	t, err := time.Parse(SavedDateLayout, v.(string))
+	if err != nil {
+		return err
+	}
+
+	*d = Date(t)
+	return nil
+}
+
+func (d Date) MarshalJSON() ([]byte, error) {
+	return json.Marshal(time.Time(d).Format(SavedDateLayout))
+}
+
+func (d Date) Format(layout string) string {
+	return time.Time(d).Format(layout)
+}
 
 type Expense struct {
 	Quantity    int     `json:"quantity"`
@@ -25,9 +53,9 @@ func (e Expense) TotalCost() float64 {
 }
 
 type Labour struct {
-	Date        tools.Date `json:"date"`
-	Description string     `json:"description"`
-	Amount      float64    `json:"amount"`
+	Date        Date    `json:"date"`
+	Description string  `json:"description"`
+	Amount      float64 `json:"amount"`
 }
 type LabourList []Labour
 
@@ -89,14 +117,14 @@ type Invoice struct {
 	ExpenseList   ExpenseList `json:"expenseList"`
 	LabourList    LabourList  `json:"labourList"`
 	InvoiceNumber int         `json:"invoiceNumber"`
-	InvoiceDate   tools.Date  `json:"invoiceDate"`
+	InvoiceDate   Date        `json:"invoiceDate"`
 }
 
 type InvoiceTemplateData struct {
 	Invoice
 	InvoiceTotal        float64
 	BootstrapStylesheet template.CSS
-	Fonts               map[string]tools.FontFamily
+	Fonts               map[string]templateHelpers.FontVariation
 }
 
 func NewInvoice() {
@@ -116,17 +144,17 @@ func NewInvoice() {
 	}
 
 	invoiceTotal := InvoiceTotal(invoice.ExpenseList, invoice.LabourList)
-	bootstrapStylesheet := tools.GetStylesheet("assets/styles/bootstrap.css")
-	fontMap := map[string]tools.FontFamily{
+	bootstrapStylesheet := templateHelpers.GetStylesheet("assets/styles/bootstrap.css")
+	fontMap := map[string]templateHelpers.FontVariation{
 		"Normal": {
 			Name:    "fira-code",
-			Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular.ttf"),
-			Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold.ttf"),
+			Regular: templateHelpers.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular.ttf"),
+			Bold:    templateHelpers.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold.ttf"),
 		},
 		"Mono": {
 			Name:    "fira-code-mono",
-			Regular: tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular-mono.ttf"),
-			Bold:    tools.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold-mono.ttf"),
+			Regular: templateHelpers.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-regular-mono.ttf"),
+			Bold:    templateHelpers.ConvertFontToBase64("assets/fonts/FiraCode/fira-code-bold-mono.ttf"),
 		},
 	}
 
@@ -137,5 +165,5 @@ func NewInvoice() {
 		Fonts:               fontMap,
 	}
 
-	tools.CreatePdf("invoice.tmpl", "./storage/invoice.pdf", templateData)
+	pdf_generator.CreatePdf("invoice.tmpl", "./storage/invoice.pdf", templateData)
 }

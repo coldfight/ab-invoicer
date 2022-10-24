@@ -1,72 +1,46 @@
-package tools
+package template_helpers
 
 import (
 	"encoding/base64"
-	"encoding/json"
 	"fmt"
 	"github.com/coldfight/ab-invoicer/templates"
 	"html/template"
 	"log"
 	"net/http"
-	"time"
 )
 
-const (
-	SavedDateLayout = "Jan 02, 2006"
-)
-
-// asCurrency - converts a float to a currency string
+// asCurrency - template function that returns a currency string of a float
 func asCurrency(num float64) string {
 	return fmt.Sprintf("$%.2f", num)
 }
 
-// getGlobalTemplateFunctions - returns a FuncMap of global template functions
-func getGlobalTemplateFunctions() template.FuncMap {
+// GetGlobalTemplateFunctions - returns a FuncMap of global template functions
+func GetGlobalTemplateFunctions() template.FuncMap {
 	return template.FuncMap{
 		"AsCurrency": asCurrency,
 	}
 }
 
-type Date time.Time
-
-func (d *Date) UnmarshalJSON(bytes []byte) error {
-	var v interface{}
-	if err := json.Unmarshal(bytes, &v); err != nil {
-		return err
-	}
-
-	t, err := time.Parse(SavedDateLayout, v.(string))
-	if err != nil {
-		return err
-	}
-
-	*d = Date(t)
-	return nil
-}
-
-func (d Date) MarshalJSON() ([]byte, error) {
-	return json.Marshal(time.Time(d).Format(SavedDateLayout))
-}
-
-func (d Date) Format(layout string) string {
-	return time.Time(d).Format(layout)
-}
-
+// Font - in css represents the src, and url of the @font-family
 type Font struct {
 	Src template.URL
 	Url template.URL
 }
 
-type FontFamily struct {
+// FontVariation - different font variation for a particular font
+type FontVariation struct {
 	Name    string
 	Bold    Font
 	Regular Font
 }
 
+// toBase64 - Converts byte slice to base64 string
 func toBase64(b []byte) string {
 	return base64.StdEncoding.EncodeToString(b)
 }
 
+// GetStylesheet - Retrieves the content of a stylesheet and returns as a template.CSS string
+// It retrieves the stylesheet from the embedded FS
 func GetStylesheet(filepath string) template.CSS {
 	data, err := templates.TemplateAssets.ReadFile(filepath)
 	if err != nil {
@@ -76,6 +50,8 @@ func GetStylesheet(filepath string) template.CSS {
 	return template.CSS(string(data))
 }
 
+// ConvertImageToBase64 - Get the base64 representation of an image and returns it as a template.URL string
+// It retrieves the image from the embedded FS
 func ConvertImageToBase64(filepath string) template.URL {
 	// Read the entire file into a byte slice
 	b, err := templates.TemplateAssets.ReadFile(filepath)
@@ -104,6 +80,8 @@ func ConvertImageToBase64(filepath string) template.URL {
 	return template.URL(base64Encoding)
 }
 
+// ConvertFontToBase64 - Get the base64 representation of a font file and returns it as a pair of template.URL strings
+// It retrieves the font file from the embedded FS
 func ConvertFontToBase64(filepath string) Font {
 	// Read the entire file into a byte slice
 	b, err := templates.TemplateAssets.ReadFile(filepath)
