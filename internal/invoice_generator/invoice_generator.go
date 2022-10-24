@@ -5,9 +5,6 @@ import (
 	"github.com/coldfight/ab-invoicer/internal/tools/pdf_generator"
 	templateHelpers "github.com/coldfight/ab-invoicer/internal/tools/template_helpers"
 	"html/template"
-	"io"
-	"log"
-	"os"
 	"time"
 )
 
@@ -127,22 +124,7 @@ type InvoiceTemplateData struct {
 	Fonts               map[string]templateHelpers.FontVariation
 }
 
-func NewInvoice() {
-	// Temp read from db.json file
-	jsonFile, err := os.Open("./storage/db.json")
-	if err != nil {
-		log.Fatal(err)
-	}
-	defer jsonFile.Close()
-
-	byteValue, _ := io.ReadAll(jsonFile)
-
-	var invoice Invoice
-	err = json.Unmarshal(byteValue, &invoice)
-	if err != nil {
-		log.Fatal(err)
-	}
-
+func NewInvoice(invoice Invoice) {
 	invoiceTotal := InvoiceTotal(invoice.ExpenseList, invoice.LabourList)
 	bootstrapStylesheet := templateHelpers.GetStylesheet("assets/styles/bootstrap.css")
 	fontMap := map[string]templateHelpers.FontVariation{
