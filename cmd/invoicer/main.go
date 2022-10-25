@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"github.com/coldfight/ab-invoicer/internal/invoice_generator"
+	"github.com/coldfight/ab-invoicer/internal/models"
 	_ "github.com/mattn/go-sqlite3"
 	"io"
 	"log"
@@ -23,7 +24,7 @@ func main() {
 
 	byteValue, _ := io.ReadAll(jsonFile)
 
-	var invoice invoice_generator.Invoice
+	var invoice models.Invoice
 	err = json.Unmarshal(byteValue, &invoice)
 	if err != nil {
 		log.Fatal(err)

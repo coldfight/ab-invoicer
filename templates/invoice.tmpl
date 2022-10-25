@@ -34,10 +34,10 @@
     <!-- Header stuff -->
     <div class="row">
         <div class="col">
-            <strong>{{.Owner.Name}}</strong><br>
-            {{.Owner.Street}}<br>
-            {{.Owner.City}}, {{.Owner.Province}}<br>
-            {{.Owner.PostalCode}}
+            <strong>{{.Invoice.Owner.Name}}</strong><br>
+            {{.Invoice.Owner.Street}}<br>
+            {{.Invoice.Owner.City}}, {{.Invoice.Owner.Province}}<br>
+            {{.Invoice.Owner.PostalCode}}
         </div>
         <div class="col">
             <div class="row text-center">
@@ -46,9 +46,9 @@
                     <div style="font-size: 80px; line-height: 1em;"
                          class="border border-info border-2 border-bottom border-bottom-0">INVOICE
                     </div>
-                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.InvoiceNumber}} | <strong>DATE:</strong>
-                        {{.InvoiceDate.Format "01/02/2006" }}
-
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber | PaddedNumber}} |
+                        <strong>DATE:</strong>
+                        {{.Invoice.InvoiceDate.Format "01/02/2006" }}
                     </div>
                 </div>
             </div>
@@ -63,10 +63,10 @@
             <strong>Billed To:</strong>
         </div>
         <div class="col">
-            {{.BilledTo.Name}}<br>
-            {{.BilledTo.Street}}<br>
-            {{.BilledTo.City}}, {{.BilledTo.Province}}<br>
-            {{.BilledTo.PostalCode}}
+            {{.Invoice.BilledTo.Name}}<br>
+            {{.Invoice.BilledTo.Street}}<br>
+            {{.Invoice.BilledTo.City}}, {{.Invoice.BilledTo.Province}}<br>
+            {{.Invoice.BilledTo.PostalCode}}
         </div>
     </div>
 
@@ -84,7 +84,7 @@
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                {{range .ExpenseList}}
+                {{range .Invoice.ExpenseList}}
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
@@ -102,18 +102,18 @@
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end" style="background-color: silver">Subtotal:</td>
                     <td class="text-end" style="background-color: silver">
-                        {{.ExpenseList.ExpensesSubtotal | AsCurrency}}</td>
+                        {{.Invoice.ExpenseList.ExpensesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Tax:</td>
-                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesTaxes | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.ExpenseList.ExpensesTaxes | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Expenses:</td>
                     <td class="text-end table-dark">
-                        {{.ExpenseList.ExpensesWithTaxesSubtotal  | AsCurrency}}</td>
+                        {{.Invoice.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -134,11 +134,11 @@
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                {{range .LabourList}}
+                {{range .Invoice.LabourList}}
                     <tr>
                         <td>{{.Date.Format "Jan 02, 2006"}}</td>
                         <td colspan="2">{{.Description}}</td>
-                        <td class="text-end">{{AsCurrency .Amount}}</td>
+                        <td class="text-end">{{.Amount | AsCurrency}}</td>
                     </tr>
                 {{end}}
                 </tbody>
@@ -146,7 +146,7 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Labour:</td>
-                    <td class="text-end table-dark">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark">{{.Invoice.LabourList.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -170,18 +170,18 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Expenses:</td>
-                    <td class="text-end table-dark bg-secondary">{{.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Labour:</td>
-                    <td class="text-end table-dark bg-secondary">{{.LabourList.LabourSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.LabourList.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;"></td>
                     <td class="text-end table-dark"><strong>Total:</strong></td>
                     <td class="text-center table-dark" style="vertical-align: middle">
-                        <strong>{{.InvoiceTotal | AsCurrency}}</strong></td>
+                        <strong>{{.Invoice.Total | AsCurrency}}</strong></td>
                 </tr>
                 </tbody>
 
@@ -192,8 +192,8 @@
 </main>
 <footer style="position: absolute; bottom: 0; height: 30px; font-size: 10px;" class="mb-4">
     <div class="container text-secondary">
-        Phone: {{.Owner.Phone}} <br>
-        Email: {{.Owner.Email}}
+        Phone: {{.Invoice.Owner.Phone}} <br>
+        Email: {{.Invoice.Owner.Email}}
     </div>
 </footer>
 </body>
