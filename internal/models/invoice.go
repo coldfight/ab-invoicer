@@ -1,35 +1,14 @@
 package models
 
 import (
-	"encoding/json"
 	"time"
 )
 
 const (
-	TaxRate         = 0.13
-	SavedDateLayout = "Jan 02, 2006"
+	TaxRate = 0.13
 )
 
 type Date time.Time
-
-func (d *Date) UnmarshalJSON(bytes []byte) error {
-	var v interface{}
-	if err := json.Unmarshal(bytes, &v); err != nil {
-		return err
-	}
-
-	t, err := time.Parse(SavedDateLayout, v.(string))
-	if err != nil {
-		return err
-	}
-
-	*d = Date(t)
-	return nil
-}
-
-func (d Date) MarshalJSON() ([]byte, error) {
-	return json.Marshal(time.Time(d).Format(SavedDateLayout))
-}
 
 func (d Date) Format(layout string) string {
 	return time.Time(d).Format(layout)
@@ -46,12 +25,12 @@ func (d *Date) SetFromString(layout, dateStr string) error {
 }
 
 type Invoice struct {
-	Owner         Owner       `json:"owner"`
-	BilledTo      Customer    `json:"billedTo"`
-	ExpenseList   ExpenseList `json:"expenseList"`
-	LabourList    LabourList  `json:"labourList"`
-	InvoiceNumber int         `json:"invoiceNumber"`
-	InvoiceDate   Date        `json:"invoiceDate"`
+	Owner         Owner
+	BilledTo      Customer
+	ExpenseList   ExpenseList
+	LabourList    LabourList
+	InvoiceNumber int
+	InvoiceDate   Date
 }
 
 func (i Invoice) Total() float64 {

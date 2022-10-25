@@ -2,7 +2,7 @@ package invoice_db_service
 
 import (
 	"database/sql"
-	"github.com/coldfight/ab-invoicer/internal/invoice_generator"
+	"github.com/coldfight/ab-invoicer/internal/models"
 	"log"
 )
 
@@ -11,14 +11,17 @@ const (
 	DbFilePath = "./storage/invoices.db"
 )
 
-func GetFullInvoiceRecord(id int) invoice_generator.Invoice {
+func GetFullInvoiceRecord(id int) models.Invoice {
 	db, err := sql.Open(DriverName, DbFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	query := `
+	var invoice models.Invoice
+
+	// Grab invoice, owner, customer
+	stmt, err := db.Prepare(`
 SELECT i.id, i.invoiceDate,
        o.name, o.street, o.city, o.province, o.postalCode, o.phone, o.email,
        c.name, c.street, c.city, c.province, c.postalCode
@@ -26,14 +29,11 @@ FROM invoices i
 LEFT JOIN owners o ON o.id = owner
 LEFT JOIN customers c ON c.id = billedTo
 WHERE i.id = ?
-`
-	stmt, err := db.Prepare(query)
+`)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer stmt.Close()
-
-	var invoice invoice_generator.Invoice
 
 	var invoiceDateString string
 	err = stmt.QueryRow(id).Scan(
@@ -45,6 +45,63 @@ WHERE i.id = ?
 		log.Fatal(err)
 	}
 	invoice.InvoiceDate.SetFromString("2006-01-02", invoiceDateString)
+
+	// Grab expenses
+	stmt2, err := db.Prepare(`
+SELECT  e.description, e.unitPrice, e.quantity
+FROM expenses e
+WHERE e.invoice = ?
+`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt2.Close()
+
+	rows, err := stmt2.Query(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var expenses models.ExpenseList
+	for rows.Next() {
+		var expense models.Expense
+		err = rows.Scan(&expense.Description, &expense.UnitPrice, &expense.Quantity)
+		if err != nil {
+			log.Fatal(err)
+		}
+		expenses = append(expenses, expense)
+	}
+	invoice.ExpenseList = expenses
+
+	// Grab labour
+	stmt3, err := db.Prepare(`
+SELECT  e.description, e.amount, e.date
+FROM labour e
+WHERE e.invoice = ?
+`)
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer stmt3.Close()
+
+	rows, err = stmt3.Query(id)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var labours models.LabourList
+	for rows.Next() {
+		var labour models.Labour
+		var dateStr string
+		err = rows.Scan(&labour.Description, &labour.Amount, &dateStr)
+		labour.Date.SetFromString("2006-01-02", dateStr)
+
+		if err != nil {
+			log.Fatal(err)
+		}
+		labours = append(labours, labour)
+	}
+	invoice.LabourList = labours
 
 	return invoice
 }

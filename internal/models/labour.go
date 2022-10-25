@@ -1,9 +1,9 @@
 package models
 
 type Labour struct {
-	Date        Date    `json:"date"`
-	Description string  `json:"description"`
-	Amount      float64 `json:"amount"`
+	Date        Date
+	Description string
+	Amount      float64
 }
 type LabourList []Labour
 

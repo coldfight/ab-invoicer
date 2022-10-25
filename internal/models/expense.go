@@ -1,9 +1,9 @@
 package models
 
 type Expense struct {
-	Quantity    int     `json:"quantity"`
-	Description string  `json:"description"`
-	UnitPrice   float64 `json:"unitPrice"`
+	Quantity    int
+	Description string
+	UnitPrice   float64
 }
 type ExpenseList []Expense
 
