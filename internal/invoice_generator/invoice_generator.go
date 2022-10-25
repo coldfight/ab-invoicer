@@ -38,6 +38,16 @@ func (d Date) Format(layout string) string {
 	return time.Time(d).Format(layout)
 }
 
+func (d *Date) SetFromString(layout, dateStr string) error {
+	t, err := time.Parse(layout, dateStr)
+	if err != nil {
+		return err
+	}
+	date := Date(t)
+	*d = date
+	return nil
+}
+
 type Expense struct {
 	Quantity    int     `json:"quantity"`
 	Description string  `json:"description"`

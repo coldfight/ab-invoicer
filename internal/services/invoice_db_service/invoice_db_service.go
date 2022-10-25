@@ -2,25 +2,24 @@ package invoice_db_service
 
 import (
 	"database/sql"
-	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/invoice_generator"
 	"log"
 )
 
 const (
-	driverName = "sqlite3"
-	dbFilePath = "./storage/invoices.db"
+	DriverName = "sqlite3"
+	DbFilePath = "./storage/invoices.db"
 )
 
-func GetFullInvoiceRecord(id int) {
-	db, err := sql.Open(driverName, dbFilePath)
+func GetFullInvoiceRecord(id int) invoice_generator.Invoice {
+	db, err := sql.Open(DriverName, DbFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
 	query := `
-SELECT i.id, -- i.invoiceDate,
+SELECT i.id, i.invoiceDate,
        o.name, o.street, o.city, o.province, o.postalCode, o.phone, o.email,
        c.name, c.street, c.city, c.province, c.postalCode
 FROM invoices i
@@ -36,29 +35,31 @@ WHERE i.id = ?
 
 	var invoice invoice_generator.Invoice
 
+	var invoiceDateString string
 	err = stmt.QueryRow(id).Scan(
-		&invoice.InvoiceNumber, // &invoice.InvoiceDate,
+		&invoice.InvoiceNumber, &invoiceDateString,
 		&invoice.Owner.Name, &invoice.Owner.Street, &invoice.Owner.City, &invoice.Owner.Province, &invoice.Owner.PostalCode, &invoice.Owner.Phone, &invoice.Owner.Email,
 		&invoice.BilledTo.Name, &invoice.BilledTo.Street, &invoice.BilledTo.City, &invoice.BilledTo.Province, &invoice.BilledTo.PostalCode,
 	)
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(invoice)
+	invoice.InvoiceDate.SetFromString("2006-01-02", invoiceDateString)
 
+	return invoice
 }
 
 func CreateInvoiceDatabase() {
 	// @todo: This is temporary... we don't want to delete this every time we load up the application
-	//os.Remove(dbFilePath)
+	//os.Remove(DbFilePath)
 
-	db, err := sql.Open(driverName, dbFilePath)
+	db, err := sql.Open(DriverName, DbFilePath)
 	if err != nil {
 		log.Fatal(err)
 	}
 	defer db.Close()
 
-	createOwnersStmt := `
+	createOwnersQuery := `
 CREATE TABLE IF NOT EXISTS owners
 (
     id         INTEGER NOT NULL PRIMARY KEY,
@@ -71,7 +72,7 @@ CREATE TABLE IF NOT EXISTS owners
     email      TEXT    NOT NULL DEFAULT ''
 );`
 
-	createCustomersStmt := `
+	createCustomersQuery := `
 CREATE TABLE IF NOT EXISTS customers
 (
     id         INTEGER NOT NULL PRIMARY KEY,
@@ -84,7 +85,7 @@ CREATE TABLE IF NOT EXISTS customers
     email      TEXT    NOT NULL DEFAULT ''
 );`
 
-	createInvoicesStmt := `
+	createInvoicesQuery := `
 CREATE TABLE IF NOT EXISTS invoices
 (
     id          INTEGER NOT NULL PRIMARY KEY,
@@ -95,7 +96,7 @@ CREATE TABLE IF NOT EXISTS invoices
     FOREIGN KEY (billedTo) REFERENCES customers (id) ON DELETE CASCADE
 );`
 
-	createExpensesStmt := `
+	createExpensesQuery := `
 CREATE TABLE IF NOT EXISTS expenses
 (
     id          INTEGER NOT NULL PRIMARY KEY,
@@ -106,7 +107,7 @@ CREATE TABLE IF NOT EXISTS expenses
     FOREIGN KEY (invoice) REFERENCES invoices (id) ON DELETE CASCADE
 );`
 
-	createLaboursStmt := `
+	createLaboursQuery := `
 CREATE TABLE IF NOT EXISTS labour
 (
     id          INTEGER NOT NULL PRIMARY KEY,
@@ -119,15 +120,14 @@ CREATE TABLE IF NOT EXISTS labour
 
 	tx, err := db.Begin()
 
-	tx.Exec(createOwnersStmt)
-	tx.Exec(createCustomersStmt)
-	tx.Exec(createInvoicesStmt)
-	tx.Exec(createExpensesStmt)
-	tx.Exec(createLaboursStmt)
+	tx.Exec(createOwnersQuery)
+	tx.Exec(createCustomersQuery)
+	tx.Exec(createInvoicesQuery)
+	tx.Exec(createExpensesQuery)
+	tx.Exec(createLaboursQuery)
 
 	err = tx.Commit()
 	if err != nil {
 		log.Fatal(err)
 	}
-
 }
