@@ -1,4 +1,4 @@
-package invoice_generator
+package invoice_service
 
 import (
 	"github.com/coldfight/ab-invoicer/internal/models"
@@ -13,7 +13,7 @@ type InvoiceTemplateData struct {
 	Fonts               map[string]templateHelpers.FontVariation
 }
 
-func NewInvoice(invoice models.Invoice) {
+func NewDocumentFromInvoice(invoice models.Invoice) {
 	bootstrapStylesheet := templateHelpers.GetStylesheet("assets/styles/bootstrap.css")
 	fontMap := map[string]templateHelpers.FontVariation{
 		"Normal": {
