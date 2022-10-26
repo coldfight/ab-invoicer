@@ -31,3 +31,13 @@ func GetFullInvoiceRecord(id int) models.Invoice {
 
 	return invoice
 }
+
+// @todo: Instead of failing log.Fatal we should be returning it and handling it nicely on the "front-end"
+
+func GetInvoices() []models.Invoice {
+	invoices, err := invoice_repository.GetAll()
+	if err != nil {
+		log.Fatal(err)
+	}
+	return invoices
+}

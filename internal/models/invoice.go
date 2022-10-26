@@ -1,6 +1,7 @@
 package models
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -9,6 +10,11 @@ const (
 )
 
 type Date time.Time
+type InvoiceNumber int
+
+func (num InvoiceNumber) Padded() string {
+	return fmt.Sprintf("%03d", num)
+}
 
 func (d Date) Format(layout string) string {
 	return time.Time(d).Format(layout)
@@ -29,7 +35,7 @@ type Invoice struct {
 	BilledTo      Customer
 	ExpenseList   ExpenseList
 	LabourList    LabourList
-	InvoiceNumber int
+	InvoiceNumber InvoiceNumber
 	InvoiceDate   Date
 }
 

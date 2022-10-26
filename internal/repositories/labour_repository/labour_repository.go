@@ -27,6 +27,7 @@ WHERE invoice = ?
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var labourList models.LabourList
 	for rows.Next() {

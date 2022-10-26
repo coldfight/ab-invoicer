@@ -64,10 +64,11 @@ CREATE TABLE IF NOT EXISTS customers
 	_, err = tx.Exec(`
 CREATE TABLE IF NOT EXISTS invoices
 (
-    id          INTEGER NOT NULL PRIMARY KEY,
-    owner       INTEGER NOT NULL DEFAULT 0,
-    billedTo    INTEGER NOT NULL DEFAULT 0,
-    invoiceDate TEXT    NOT NULL DEFAULT '',
+    id          	INTEGER NOT NULL PRIMARY KEY,
+    owner       	INTEGER NOT NULL DEFAULT 0,
+    billedTo    	INTEGER NOT NULL DEFAULT 0,
+    invoiceNumber   INTEGER NOT NULL DEFAULT 0,
+    invoiceDate 	TEXT    NOT NULL DEFAULT '',
     FOREIGN KEY (owner) REFERENCES owners (id) ON DELETE CASCADE,
     FOREIGN KEY (billedTo) REFERENCES customers (id) ON DELETE CASCADE
 )`)

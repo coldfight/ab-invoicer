@@ -7,7 +7,7 @@ import (
 	"html/template"
 )
 
-type InvoiceTemplateData struct {
+type invoiceTemplateData struct {
 	Invoice             models.Invoice
 	BootstrapStylesheet template.CSS
 	Fonts               map[string]templateHelpers.FontVariation
@@ -28,7 +28,7 @@ func NewDocumentFromInvoice(invoice models.Invoice) {
 		},
 	}
 
-	templateData := InvoiceTemplateData{
+	templateData := invoiceTemplateData{
 		Invoice:             invoice,
 		BootstrapStylesheet: bootstrapStylesheet,
 		Fonts:               fontMap,

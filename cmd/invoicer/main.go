@@ -1,14 +1,14 @@
 package main
 
 import (
-	dbService "github.com/coldfight/ab-invoicer/internal/services/db_service"
-	invoiceService "github.com/coldfight/ab-invoicer/internal/services/invoice_service"
+	"github.com/coldfight/ab-invoicer/internal/ui/list_invoices"
 	_ "github.com/mattn/go-sqlite3"
 )
 
 func main() {
-	dbService.CreateInitialDatabase()
-	//dbService.SeedDatabase()
-	invoice := invoiceService.GetFullInvoiceRecord(1)
-	invoiceService.NewDocumentFromInvoice(invoice)
+	//dbService.CreateInitialDatabase()
+	//invoice := invoiceService.GetFullInvoiceRecord(1)
+	//invoiceService.NewDocumentFromInvoice(invoice)
+
+	list_invoices.Run()
 }

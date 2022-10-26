@@ -26,6 +26,7 @@ WHERE invoice = ?
 	if err != nil {
 		return nil, err
 	}
+	defer rows.Close()
 
 	var expenses models.ExpenseList
 	for rows.Next() {
