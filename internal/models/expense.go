@@ -4,6 +4,7 @@ type Expense struct {
 	Quantity    int
 	Description string
 	UnitPrice   float64
+	// should I add id int and invoice int?
 }
 type ExpenseList []Expense
 

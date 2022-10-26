@@ -48,7 +48,7 @@
                     </div>
                     <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber | PaddedNumber}} |
                         <strong>DATE:</strong>
-                        {{.Invoice.InvoiceDate.Format "01/02/2006" }}
+                        {{.Invoice.InvoiceDate.Format "2006/01/02" }}
                     </div>
                 </div>
             </div>
@@ -136,7 +136,7 @@
                 <tbody class="table-group-divider">
                 {{range .Invoice.LabourList}}
                     <tr>
-                        <td>{{.Date.Format "Jan 02, 2006"}}</td>
+                        <td>{{.Date.Format "2006/01/02"}}</td>
                         <td colspan="2">{{.Description}}</td>
                         <td class="text-end">{{.Amount | AsCurrency}}</td>
                     </tr>

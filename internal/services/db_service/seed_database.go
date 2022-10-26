@@ -1,4 +1,4 @@
-package invoice_db_service
+package db_service
 
 import (
 	"database/sql"
