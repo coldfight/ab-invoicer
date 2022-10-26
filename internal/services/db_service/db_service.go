@@ -10,11 +10,15 @@ const (
 	DbFilePath = "./storage/invoices.db"
 )
 
+func GetConnection() (*sql.DB, error) {
+	return sql.Open(DriverName, DbFilePath)
+}
+
 func CreateInitialDatabase() {
 	// @todo: This is temporary... we don't want to delete this every time we load up the application
 	//os.Remove(DbFilePath)
 
-	db, err := sql.Open(DriverName, DbFilePath)
+	db, err := GetConnection()
 	if err != nil {
 		log.Fatal(err)
 	}

@@ -1,12 +1,18 @@
 package labour_repository
 
 import (
-	"database/sql"
 	"github.com/coldfight/ab-invoicer/internal/models"
+	"github.com/coldfight/ab-invoicer/internal/services/db_service"
 	"log"
 )
 
-func GetByInvoiceId(invoiceId int, db *sql.DB) (models.LabourList, error) {
+func GetByInvoiceId(invoiceId int) (models.LabourList, error) {
+	db, err := db_service.GetConnection()
+	if err != nil {
+		return nil, err
+	}
+	defer db.Close()
+
 	stmt, err := db.Prepare(`
 SELECT description, amount, date
 FROM labour 
