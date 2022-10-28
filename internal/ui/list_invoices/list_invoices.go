@@ -8,13 +8,10 @@ import (
 	"os"
 )
 
-const url = "https://amedeobonanno.com/"
-
 type myModel struct {
 	invoiceList []models.Invoice
 	cursor      int
 	err         error
-	//selected    map[int]struct{}
 }
 
 type errMsg struct{ err error }
@@ -24,26 +21,21 @@ func (e errMsg) Error() string {
 	return e.err.Error()
 }
 
-func getList() tea.Msg {
+func getInvoiceList() tea.Msg {
 	invoices := invoice_service.GetInvoices()
 	return invoicesMsg(invoices)
 }
 
-//func checkSomeUrl(myUrl string) tea.Cmd {
-//	return func() tea.Msg {
-//		c := &http.Client{Timeout: 10 * time.Second}
-//		res, err := c.Get(myUrl)
-//
-//		if err != nil {
-//			return errMsg{err}
-//		}
-//
-//		return statusMsg(res.StatusCode)
-//	}
-//}
+func getInvoice(id int) tea.Cmd {
+	return func() tea.Msg {
+		invoice := invoice_service.GetFullInvoiceRecord(id)
+		return invoicesMsg{invoice}
+	}
+}
 
 func (m myModel) Init() tea.Cmd {
-	return getList
+	return getInvoiceList
+	//return getInvoice(8)
 }
 
 func (m myModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
@@ -91,6 +83,7 @@ func (m myModel) View() string {
 		)
 	}
 
+	// Footer
 	s += "\nPress q to quit.\n"
 
 	return s
