@@ -1,19 +1,18 @@
 package app
 
-import (
-	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/ui/menu"
-)
+import "github.com/coldfight/ab-invoicer/internal/ui/views"
 
 func Run() {
-	m := menu.Menu{
-		Options: []menu.MenuItem{
-			{Text: "new check-in", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
-			{Text: "view check-ins", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
-		},
-	}
-	p := tea.NewProgram(m)
-	if err := p.Start(); err != nil {
-		panic(err)
-	}
+	//m := menu.Menu{
+	//	Options: []menu.MenuItem{
+	//		{Text: "Create new invoice", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
+	//		{Text: "View all invoices", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
+	//	},
+	//}
+	//p := tea.NewProgram(m, tea.WithAltScreen())
+	//if err := p.Start(); err != nil {
+	//	panic(err)
+	//}
+
+	views.Run()
 }
