@@ -3,7 +3,6 @@ package app
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_list"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/main_menu"
 	"os"
 )
@@ -44,9 +43,8 @@ func Run() {
 
 func NewApp() AppModel {
 	return AppModel{
-		state:       invoiceListView,
-		mainMenu:    main_menu.New(),
-		invoiceList: invoice_list.New(),
+		state:    mainMenuView,
+		mainMenu: main_menu.New(),
 	}
 }
 
