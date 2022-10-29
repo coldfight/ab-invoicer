@@ -1,24 +1,17 @@
-package list_invoices
+package invoice_list
 
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
-	"os"
 )
 
-type myModel struct {
+// @todo: This does not work... Iwill need to figure out how to initialize the list since this submodel's Init() does not get called
+type Model struct {
 	invoiceList []models.Invoice
 	cursor      int
 	err         error
-}
-
-type errMsg struct{ err error }
-type invoicesMsg []models.Invoice
-
-func (e errMsg) Error() string {
-	return e.err.Error()
 }
 
 func getInvoiceList() tea.Msg {
@@ -33,12 +26,15 @@ func getInvoice(id int) tea.Cmd {
 	}
 }
 
-func (m myModel) Init() tea.Cmd {
-	return getInvoiceList
-	//return getInvoice(8)
+func New() Model {
+	return Model{}
 }
 
-func (m myModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m Model) Init() tea.Cmd {
+	return nil
+}
+
+func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case invoicesMsg:
 		m.invoiceList = msg
@@ -62,7 +58,7 @@ func (m myModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m myModel) View() string {
+func (m Model) View() string {
 	if m.err != nil {
 		return fmt.Sprintf("\nWe had some trouble: %v\n\n", m.err)
 	}
@@ -87,12 +83,4 @@ func (m myModel) View() string {
 	s += "\nPress q to quit.\n"
 
 	return s
-}
-
-func Run() {
-	p := tea.NewProgram(myModel{})
-	if err := p.Start(); err != nil {
-		fmt.Printf("Alas, there's been an error: %v\n", err)
-		os.Exit(1)
-	}
 }

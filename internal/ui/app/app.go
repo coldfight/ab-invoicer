@@ -1,18 +1,82 @@
 package app
 
-import "github.com/coldfight/ab-invoicer/internal/ui/views"
+import (
+	"fmt"
+	tea "github.com/charmbracelet/bubbletea"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_list"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/main_menu"
+	"os"
+)
 
+var p *tea.Program
+
+type sessionState int
+
+const (
+	mainMenuView sessionState = iota
+	invoiceFormView
+	editInvoiceFormView
+	invoiceItemView
+	invoiceListView
+)
+
+// AppModel the main application model which holds/controls other models
+type AppModel struct {
+	state           sessionState
+	mainMenu        tea.Model // MainMenuModel
+	invoiceForm     tea.Model // InvoiceFormModel
+	editInvoiceForm tea.Model // EditInvoiceFormModel
+	invoiceItem     tea.Model // InvoiceItemModel
+	invoiceList     tea.Model // InvoiceListModel
+	windowSize      tea.WindowSizeMsg
+}
+
+// Run the entry point of the application
 func Run() {
-	//m := menu.Menu{
-	//	Options: []menu.MenuItem{
-	//		{Text: "Create new invoice", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
-	//		{Text: "View all invoices", OnPress: func() tea.Msg { return menu.ToggleCasingMsg{} }},
-	//	},
-	//}
-	//p := tea.NewProgram(m, tea.WithAltScreen())
-	//if err := p.Start(); err != nil {
-	//	panic(err)
-	//}
+	app := NewApp()
 
-	views.Run()
+	p := tea.NewProgram(app, tea.WithAltScreen())
+	if err := p.Start(); err != nil {
+		fmt.Println("Error running program:", err)
+		os.Exit(1)
+	}
+}
+
+func NewApp() AppModel {
+	return AppModel{
+		state:       invoiceListView,
+		mainMenu:    main_menu.New(),
+		invoiceList: invoice_list.New(),
+	}
+}
+
+func (app AppModel) Init() tea.Cmd {
+	return nil
+}
+
+func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	var cmds []tea.Cmd
+	switch msg.(type) {
+	case tea.WindowSizeMsg:
+		app.windowSize = msg.(tea.WindowSizeMsg)
+	}
+
+	switch app.state {
+	case mainMenuView:
+		app.mainMenu, cmd = app.mainMenu.Update(msg)
+	case invoiceListView:
+		app.invoiceList, cmd = app.invoiceList.Update(msg)
+	}
+	cmds = append(cmds, cmd)
+	return app, tea.Batch(cmds...)
+}
+
+func (app AppModel) View() string {
+	switch app.state {
+	case invoiceListView:
+		return app.invoiceList.View()
+	default:
+		return app.mainMenu.View()
+	}
 }
