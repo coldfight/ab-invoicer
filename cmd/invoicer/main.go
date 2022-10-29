@@ -6,6 +6,7 @@ import (
 	"github.com/coldfight/ab-invoicer/internal/services/db_service"
 	"github.com/coldfight/ab-invoicer/internal/ui/app"
 	_ "github.com/mattn/go-sqlite3"
+	"log"
 	"os"
 )
 
@@ -15,10 +16,16 @@ func main() {
 			fmt.Println("Couldn't open a file for logging:", err)
 			os.Exit(1)
 		} else {
-			defer f.Close()
+			defer func() {
+				err = f.Close()
+				if err != nil {
+					log.Fatal(err)
+				}
+			}()
 		}
 	}
 
+	// @todo: convert to using Gorm
 	db_service.CreateInitialDatabase()
 	//invoice := invoiceService.GetFullInvoiceRecord(1)
 	//invoiceService.NewDocumentFromInvoice(invoice)
