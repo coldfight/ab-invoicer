@@ -1,85 +1,82 @@
 package app
 
 import (
+	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/ui/pages"
-	"log"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_list"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/main_menu"
+	"os"
 )
 
+var p *tea.Program
+
+type sessionState int
+
+const (
+	mainMenuView sessionState = iota
+	invoiceFormView
+	editInvoiceFormView
+	invoiceItemView
+	invoiceListView
+)
+
+// AppModel the main application model which holds/controls other models
 type AppModel struct {
-	state       pages.State
-	mainMenu    pages.MainMenuModel
-	invoiceForm pages.InvoiceFormModel
+	state           sessionState
+	mainMenu        tea.Model // MainMenuModel
+	invoiceForm     tea.Model // InvoiceFormModel
+	editInvoiceForm tea.Model // EditInvoiceFormModel
+	invoiceItem     tea.Model // InvoiceItemModel
+	invoiceList     tea.Model // InvoiceListModel
+	windowSize      tea.WindowSizeMsg
+}
+
+// Run the entry point of the application
+func Run() {
+	app := NewApp()
+
+	p := tea.NewProgram(app, tea.WithAltScreen())
+	if err := p.Start(); err != nil {
+		fmt.Println("Error running program:", err)
+		os.Exit(1)
+	}
+}
+
+func NewApp() AppModel {
+	return AppModel{
+		state:       invoiceListView,
+		mainMenu:    main_menu.New(),
+		invoiceList: invoice_list.New(),
+	}
 }
 
 func (app AppModel) Init() tea.Cmd {
 	return nil
 }
 
-func (app AppModel) SetPage(s pages.State) (tea.Model, tea.Cmd) {
-	app.state = s
-	cmd := func() tea.Msg {
-		return nil
-	}
-	return app, cmd
-}
-
 func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	var cmd tea.Cmd
+	var cmds []tea.Cmd
 	switch msg.(type) {
-	case tea.KeyMsg:
-		switch msg.(tea.KeyMsg).String() {
-		case "ctrl+c":
-			log.Println("Apps quit")
-			return app, tea.Quit
-		}
+	case tea.WindowSizeMsg:
+		app.windowSize = msg.(tea.WindowSizeMsg)
 	}
 
 	switch app.state {
-	case pages.ShowMainMenu:
-		log.Println("show main menu message")
-		m, cmd := app.mainMenu.Update(msg)
-		mainMenu, ok := m.(pages.MainMenuModel)
-		if ok {
-			app.mainMenu = mainMenu
-			// @todo: Logic for changing state goes here. You change state based on how the update affected the menu model
-			return app, cmd
-		}
-	case pages.ShowInvoiceForm:
-		log.Println("show invoice form message")
-		m, cmd := app.invoiceForm.Update(msg)
-		invoiceForm, ok := m.(pages.InvoiceFormModel)
-		if ok {
-			app.invoiceForm = invoiceForm
-			// @todo: Logic for changing state goes here. You change state based on how the update affected the invoice form model
-			return app, cmd
-		}
+	case mainMenuView:
+		app.mainMenu, cmd = app.mainMenu.Update(msg)
+	case invoiceListView:
+		app.invoiceList, cmd = app.invoiceList.Update(msg)
 	}
-
-	return app, nil
+	cmds = append(cmds, cmd)
+	return app, tea.Batch(cmds...)
 }
 
 func (app AppModel) View() string {
 	switch app.state {
-	case pages.ShowInvoiceForm:
-		return app.invoiceForm.View()
+	case invoiceListView:
+		return app.invoiceList.View()
 	default:
 		return app.mainMenu.View()
-	}
-}
-
-func NewApp() AppModel {
-	return AppModel{
-		state:       pages.ShowMainMenu,
-		mainMenu:    pages.NewMainMenuPage(),
-		invoiceForm: pages.NewInvoiceFormPage(),
-	}
-}
-
-func Run() {
-	app := NewApp()
-
-	p := tea.NewProgram(app, tea.WithAltScreen())
-	if err := p.Start(); err != nil {
-		panic(err)
 	}
 }

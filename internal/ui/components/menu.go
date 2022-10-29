@@ -1,4 +1,4 @@
-package pages
+package components
 
 import (
 	"fmt"
@@ -7,39 +7,37 @@ import (
 	"strings"
 )
 
-type switchPageMsg struct {
-	page State
-}
+type toggleCaseMsg struct{}
 
 type MenuItem struct {
 	Text    string
 	OnPress func() tea.Msg
 }
 
-type MainMenuModel struct {
+type MenuModel struct {
 	Options       []MenuItem
 	SelectedIndex int
 }
 
-func NewMainMenuPage() MainMenuModel {
-	return MainMenuModel{
+func NewMainMenuPage() MenuModel {
+	return MenuModel{
 		Options: []MenuItem{
-			{Text: "Create new invoice", OnPress: func() tea.Msg { return switchPageMsg{page: ShowInvoiceForm} }},
-			{Text: "View all invoices", OnPress: func() tea.Msg { return switchPageMsg{page: ShowInvoiceForm} }},
+			{Text: "Create new invoice", OnPress: func() tea.Msg { return toggleCaseMsg{} }},
+			{Text: "View all invoices", OnPress: func() tea.Msg { return toggleCaseMsg{} }},
 		},
 	}
 }
 
-func (m MainMenuModel) Init() tea.Cmd {
+func (m MenuModel) Init() tea.Cmd {
 	log.Println(m)
 	return nil
 }
 
-func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+func (m MenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	log.Println(m.Options)
 	switch msg.(type) {
-	case switchPageMsg:
-		return m.toggleSelectedItemCase(msg.(switchPageMsg).page), nil
+	case toggleCaseMsg:
+		return m.toggleSelectedItemCase(), nil
 	case tea.KeyMsg:
 		switch msg.(tea.KeyMsg).String() {
 		case "ctrl+c":
@@ -53,7 +51,7 @@ func (m MainMenuModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
-func (m MainMenuModel) View() string {
+func (m MenuModel) View() string {
 	log.Println(m.Options)
 
 	var options []string
@@ -70,7 +68,7 @@ func (m MainMenuModel) View() string {
 	)
 }
 
-func (m MainMenuModel) moveCursor(msg tea.KeyMsg) MainMenuModel {
+func (m MenuModel) moveCursor(msg tea.KeyMsg) MenuModel {
 	switch msg.String() {
 	case "up", "left":
 		m.SelectedIndex--
@@ -84,8 +82,7 @@ func (m MainMenuModel) moveCursor(msg tea.KeyMsg) MainMenuModel {
 	return m
 }
 
-func (m MainMenuModel) toggleSelectedItemCase(page State) tea.Model {
-	log.Println("I really need to switch to the selected page at this point...")
+func (m MenuModel) toggleSelectedItemCase() tea.Model {
 	selectedText := m.Options[m.SelectedIndex].Text
 	if selectedText == strings.ToUpper(selectedText) {
 		m.Options[m.SelectedIndex].Text = strings.ToLower(selectedText)
