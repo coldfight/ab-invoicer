@@ -52,6 +52,7 @@ func (app AppModel) Init() tea.Cmd {
 	return nil
 }
 
+// Update handle IO and commands
 func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	var cmds []tea.Cmd
