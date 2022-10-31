@@ -12,10 +12,10 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
 
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
-		var view common.SessionState
+		var state common.SessionState
 
 		if i, ok := m.SelectedItem().(MenuItem); ok {
-			view = i.view
+			state = i.state
 		} else {
 			return nil
 		}
@@ -28,7 +28,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 				var cmds []tea.Cmd
 				cmds = append(cmds, func() tea.Msg {
-					return common.SwitchToViewMsg{View: view}
+					return common.SwitchToStateMsg{State: state}
 				})
 				return tea.Batch(cmds...)
 			}
@@ -57,19 +57,13 @@ type delegateKeyMap struct {
 // ShortHelp Additional short help entries. This satisfies
 // the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{
-		d.choose,
-	}
+	return []key.Binding{d.choose}
 }
 
 // FullHelp - Additional full help entries. This satisfies
 // the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{
-		{
-			d.choose,
-		},
-	}
+	return [][]key.Binding{{d.choose}}
 }
 
 func newDelegateKeyMap() *delegateKeyMap {

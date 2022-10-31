@@ -28,6 +28,7 @@ func Run() {
 	app := NewApp()
 
 	p := tea.NewProgram(app, tea.WithAltScreen())
+
 	if err := p.Start(); err != nil {
 		fmt.Println("Error running program:", err)
 		os.Exit(1)
@@ -49,13 +50,15 @@ func (app AppModel) Init() tea.Cmd {
 func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	var cmds []tea.Cmd
+
+	// Listen for messages
 	switch msg.(type) {
 	case tea.WindowSizeMsg:
 		logit.Debug("Resizing window", msg)
 		app.windowSize = msg.(tea.WindowSizeMsg)
-	case common.SwitchToViewMsg:
-		logit.Debug("Switching View", msg)
-		v := msg.(common.SwitchToViewMsg).View
+	case common.SwitchToStateMsg:
+		logit.Debug("Switching State", msg)
+		v := msg.(common.SwitchToStateMsg).State
 		switch v {
 		case common.InvoiceListView:
 			logit.Debug("Creating a new invoice list view", msg)
@@ -64,6 +67,7 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		app.state = v
 	}
 
+	// Delegate the Update methods to each sub-model
 	switch app.state {
 	case common.MainMenuView:
 		logit.Debug("Update main menu", msg)

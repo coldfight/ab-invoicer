@@ -10,4 +10,4 @@ const (
 	InvoiceListView
 )
 
-type SwitchToViewMsg struct{ View SessionState }
+type SwitchToStateMsg struct{ State SessionState }

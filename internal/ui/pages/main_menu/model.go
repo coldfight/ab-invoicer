@@ -11,13 +11,13 @@ import (
 type MenuItem struct {
 	title       string
 	description string
-	view        common.SessionState
+	state       common.SessionState
 }
 
-func (i MenuItem) Title() string                { return i.title }
-func (i MenuItem) Description() string          { return i.description }
-func (i MenuItem) FilterValue() string          { return i.title }
-func (i MenuItem) GetView() common.SessionState { return i.view }
+func (i MenuItem) Title() string                 { return i.title }
+func (i MenuItem) Description() string           { return i.description }
+func (i MenuItem) FilterValue() string           { return i.title }
+func (i MenuItem) GetState() common.SessionState { return i.state }
 
 type listKeyMap struct {
 	toggleHelpMenu key.Binding
@@ -49,12 +49,12 @@ func New() Model {
 		MenuItem{
 			title:       "Create A New Invoice",
 			description: "A form will be displayed that will allow you to generate an invoice.",
-			view:        common.InvoiceFormView,
+			state:       common.InvoiceFormView,
 		},
 		MenuItem{
 			title:       "View All Invoices",
 			description: "A list of past invoices will be displayed. You can select one to view or edit it.",
-			view:        common.InvoiceListView,
+			state:       common.InvoiceListView,
 		},
 	}
 
