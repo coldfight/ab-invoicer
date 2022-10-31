@@ -5,9 +5,9 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
+	"log"
 )
 
-// @todo: This does not work... Iwill need to figure out how to initialize the list since this submodel's Init() does not get called
 type Model struct {
 	invoiceList []models.Invoice
 	cursor      int
@@ -19,15 +19,10 @@ func getInvoiceList() tea.Msg {
 	return invoicesMsg(invoices)
 }
 
-func getInvoice(id int) tea.Cmd {
-	return func() tea.Msg {
-		invoice := invoice_service.GetFullInvoiceRecord(id)
-		return invoicesMsg{invoice}
-	}
-}
-
 func New() Model {
-	return Model{}
+	return Model{
+		invoiceList: getInvoiceList().(invoicesMsg),
+	}
 }
 
 func (m Model) Init() tea.Cmd {
@@ -37,6 +32,7 @@ func (m Model) Init() tea.Cmd {
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	switch msg := msg.(type) {
 	case invoicesMsg:
+		log.Println("")
 		m.invoiceList = msg
 	case errMsg:
 		m.err = msg

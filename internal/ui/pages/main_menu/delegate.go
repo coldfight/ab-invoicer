@@ -4,16 +4,18 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/coldfight/ab-invoicer/internal/tools/logit"
+	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
 func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
 
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
-		var title string
+		var view common.SessionState
 
 		if i, ok := m.SelectedItem().(MenuItem); ok {
-			title = i.Title()
+			view = i.view
 		} else {
 			return nil
 		}
@@ -22,22 +24,20 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, keys.choose):
-				return m.NewStatusMessage(statusMessageStyle("You chose " + title))
+				logit.Debug("main menu's enter key...")
 
-			case key.Matches(msg, keys.remove):
-				index := m.Index()
-				m.RemoveItem(index)
-				if len(m.Items()) == 0 {
-					keys.remove.SetEnabled(false)
-				}
-				return m.NewStatusMessage(statusMessageStyle("Deleted " + title))
+				var cmds []tea.Cmd
+				cmds = append(cmds, func() tea.Msg {
+					return common.SwitchToViewMsg{View: view}
+				})
+				return tea.Batch(cmds...)
 			}
 		}
 
 		return nil
 	}
 
-	help := []key.Binding{keys.choose, keys.remove}
+	help := []key.Binding{keys.choose}
 
 	d.ShortHelpFunc = func() []key.Binding {
 		return help
@@ -52,25 +52,22 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 type delegateKeyMap struct {
 	choose key.Binding
-	remove key.Binding
 }
 
-// Additional short help entries. This satisfies the help.KeyMap interface and
-// is entirely optional.
+// ShortHelp Additional short help entries. This satisfies
+// the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		d.choose,
-		d.remove,
 	}
 }
 
-// Additional full help entries. This satisfies the help.KeyMap interface and
-// is entirely optional.
+// FullHelp - Additional full help entries. This satisfies
+// the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{
 		{
 			d.choose,
-			d.remove,
 		},
 	}
 }
@@ -80,10 +77,6 @@ func newDelegateKeyMap() *delegateKeyMap {
 		choose: key.NewBinding(
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "choose"),
-		),
-		remove: key.NewBinding(
-			key.WithKeys("x", "backspace"),
-			key.WithHelp("x", "delete"),
 		),
 	}
 }

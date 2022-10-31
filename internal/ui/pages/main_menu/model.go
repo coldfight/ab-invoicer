@@ -5,6 +5,8 @@ import (
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/charmbracelet/lipgloss"
+	"github.com/coldfight/ab-invoicer/internal/tools/logit"
+	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
 var (
@@ -23,42 +25,24 @@ var (
 type MenuItem struct {
 	title       string
 	description string
+	view        common.SessionState
 }
 
-func (i MenuItem) Title() string       { return i.title }
-func (i MenuItem) Description() string { return i.description }
-func (i MenuItem) FilterValue() string { return i.title }
+func (i MenuItem) Title() string                { return i.title }
+func (i MenuItem) Description() string          { return i.description }
+func (i MenuItem) FilterValue() string          { return i.title }
+func (i MenuItem) GetView() common.SessionState { return i.view }
 
 type listKeyMap struct {
-	toggleSpinner    key.Binding
-	toggleTitleBar   key.Binding
-	toggleStatusBar  key.Binding
-	togglePagination key.Binding
-	toggleHelpMenu   key.Binding
-	insertItem       key.Binding
+	toggleSpinner  key.Binding
+	toggleHelpMenu key.Binding
 }
 
 func newListKeyMap() *listKeyMap {
 	return &listKeyMap{
-		insertItem: key.NewBinding(
-			key.WithKeys("a"),
-			key.WithHelp("a", "add item"),
-		),
 		toggleSpinner: key.NewBinding(
 			key.WithKeys("s"),
 			key.WithHelp("s", "toggle spinner"),
-		),
-		toggleTitleBar: key.NewBinding(
-			key.WithKeys("T"),
-			key.WithHelp("T", "toggle title"),
-		),
-		toggleStatusBar: key.NewBinding(
-			key.WithKeys("S"),
-			key.WithHelp("S", "toggle status"),
-		),
-		togglePagination: key.NewBinding(
-			key.WithKeys("P"),
-			key.WithHelp("P", "toggle pagination"),
 		),
 		toggleHelpMenu: key.NewBinding(
 			key.WithKeys("H"),
@@ -84,41 +68,46 @@ func New() Model {
 		MenuItem{
 			title:       "Create A New Invoice",
 			description: "A form will be displayed that will allow you to generate an invoice.",
+			view:        common.InvoiceFormView,
 		},
 		MenuItem{
 			title:       "View All Invoices",
 			description: "A list of past invoices will be displayed. You can select one to view or edit it.",
+			view:        common.InvoiceListView,
 		},
 	}
 
 	// Setup list
 	delegate := newItemDelegate(delegateKeys)
-	groceryList := list.New(menuItems, delegate, 0, 0)
-	groceryList.Title = "AB Invoicer"
-	groceryList.Styles.Title = titleStyle
-	groceryList.AdditionalFullHelpKeys = func() []key.Binding {
+
+	menuList := list.New(menuItems, delegate, 0, 0)
+	menuList.SetShowTitle(true)
+	menuList.SetShowFilter(true)
+	menuList.SetFilteringEnabled(true)
+	menuList.SetShowStatusBar(false)
+	menuList.SetShowPagination(true)
+	menuList.Title = "AB Invoicer"
+	menuList.Styles.Title = titleStyle
+	menuList.AdditionalFullHelpKeys = func() []key.Binding {
 		return []key.Binding{
 			listKeys.toggleSpinner,
-			listKeys.insertItem,
-			listKeys.toggleTitleBar,
-			listKeys.toggleStatusBar,
-			listKeys.togglePagination,
 			listKeys.toggleHelpMenu,
 		}
 	}
 
 	return Model{
-		list:         groceryList,
+		list:         menuList,
 		keys:         listKeys,
 		delegateKeys: delegateKeys,
 	}
 }
 
 func (m Model) Init() tea.Cmd {
-	return tea.EnterAltScreen
+	return nil
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
+	logit.Debug("main menu's update")
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
@@ -135,34 +124,13 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch {
 		case key.Matches(msg, m.keys.toggleSpinner):
 			cmd := m.list.ToggleSpinner()
-			return m, cmd
-
-		case key.Matches(msg, m.keys.toggleTitleBar):
-			v := !m.list.ShowTitle()
-			m.list.SetShowTitle(v)
-			m.list.SetShowFilter(v)
-			m.list.SetFilteringEnabled(v)
-			return m, nil
-
-		case key.Matches(msg, m.keys.toggleStatusBar):
-			m.list.SetShowStatusBar(!m.list.ShowStatusBar())
-			return m, nil
-
-		case key.Matches(msg, m.keys.togglePagination):
-			m.list.SetShowPagination(!m.list.ShowPagination())
-			return m, nil
+			statusCmd := m.list.NewStatusMessage(statusMessageStyle("Loading..."))
+			return m, tea.Batch(cmd, statusCmd)
 
 		case key.Matches(msg, m.keys.toggleHelpMenu):
 			m.list.SetShowHelp(!m.list.ShowHelp())
 			return m, nil
 
-		case key.Matches(msg, m.keys.insertItem):
-			m.delegateKeys.remove.SetEnabled(true)
-			newItem := MenuItem{title: "New Item", description: "This is a new item"}
-			insCmd := m.list.InsertItem(0, newItem)
-			statusCmd := m.list.NewStatusMessage(statusMessageStyle("Added " + newItem.Title()))
-			return m, tea.Batch(insCmd, statusCmd)
-			return m, nil
 		}
 	}
 
