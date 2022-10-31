@@ -4,22 +4,8 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/charmbracelet/lipgloss"
 	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
-)
-
-var (
-	appStyle = lipgloss.NewStyle().Padding(1, 2)
-
-	titleStyle = lipgloss.NewStyle().
-			Foreground(lipgloss.Color("#FFFDF5")).
-			Background(lipgloss.Color("#25A065")).
-			Padding(0, 1)
-
-	statusMessageStyle = lipgloss.NewStyle().
-				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
-				Render
 )
 
 type MenuItem struct {
@@ -34,16 +20,11 @@ func (i MenuItem) FilterValue() string          { return i.title }
 func (i MenuItem) GetView() common.SessionState { return i.view }
 
 type listKeyMap struct {
-	toggleSpinner  key.Binding
 	toggleHelpMenu key.Binding
 }
 
 func newListKeyMap() *listKeyMap {
 	return &listKeyMap{
-		toggleSpinner: key.NewBinding(
-			key.WithKeys("s"),
-			key.WithHelp("s", "toggle spinner"),
-		),
 		toggleHelpMenu: key.NewBinding(
 			key.WithKeys("H"),
 			key.WithHelp("H", "toggle help"),
@@ -87,10 +68,9 @@ func New() Model {
 	menuList.SetShowStatusBar(false)
 	menuList.SetShowPagination(true)
 	menuList.Title = "AB Invoicer"
-	menuList.Styles.Title = titleStyle
+	menuList.Styles.Title = common.TitleStyle
 	menuList.AdditionalFullHelpKeys = func() []key.Binding {
 		return []key.Binding{
-			listKeys.toggleSpinner,
 			listKeys.toggleHelpMenu,
 		}
 	}
@@ -112,7 +92,7 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
-		h, v := appStyle.GetFrameSize()
+		h, v := common.AppStyle.GetFrameSize()
 		m.list.SetSize(msg.Width-h, msg.Height-v)
 
 	case tea.KeyMsg:
@@ -122,11 +102,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		switch {
-		case key.Matches(msg, m.keys.toggleSpinner):
-			cmd := m.list.ToggleSpinner()
-			statusCmd := m.list.NewStatusMessage(statusMessageStyle("Loading..."))
-			return m, tea.Batch(cmd, statusCmd)
-
 		case key.Matches(msg, m.keys.toggleHelpMenu):
 			m.list.SetShowHelp(!m.list.ShowHelp())
 			return m, nil
@@ -143,5 +118,5 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 }
 
 func (m Model) View() string {
-	return appStyle.Render(m.list.View())
+	return common.AppStyle.Render(m.list.View())
 }
