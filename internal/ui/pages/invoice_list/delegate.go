@@ -4,6 +4,7 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -19,13 +20,22 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 			return nil
 		}
 
+		logit.Debug("state: ", state)
+
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
 			switch {
 			case key.Matches(msg, keys.choose):
 				var cmds []tea.Cmd
 				cmds = append(cmds, func() tea.Msg {
+					// @todo: This will need to switch to view individual invoice
 					return common.SwitchToStateMsg{State: state}
+				})
+				return tea.Batch(cmds...)
+			case key.Matches(msg, keys.back):
+				var cmds []tea.Cmd
+				cmds = append(cmds, func() tea.Msg {
+					return common.SwitchToStateMsg{State: common.MainMenuView}
 				})
 				return tea.Batch(cmds...)
 			}
@@ -34,7 +44,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		return nil
 	}
 
-	help := []key.Binding{keys.choose}
+	help := []key.Binding{keys.choose, keys.back}
 
 	d.ShortHelpFunc = func() []key.Binding {
 		return help
@@ -49,18 +59,25 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 type delegateKeyMap struct {
 	choose key.Binding
+	back   key.Binding
 }
 
 // ShortHelp Additional short help entries. This satisfies
 // the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) ShortHelp() []key.Binding {
-	return []key.Binding{d.choose}
+	return []key.Binding{
+		d.choose,
+		d.back,
+	}
 }
 
 // FullHelp - Additional full help entries. This satisfies
 // the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) FullHelp() [][]key.Binding {
-	return [][]key.Binding{{d.choose}}
+	return [][]key.Binding{{
+		d.choose,
+		d.back,
+	}}
 }
 
 func newDelegateKeyMap() *delegateKeyMap {
@@ -68,6 +85,10 @@ func newDelegateKeyMap() *delegateKeyMap {
 		choose: key.NewBinding(
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "choose"),
+		),
+		back: key.NewBinding(
+			key.WithKeys("x"),
+			key.WithHelp("x", "back to main menu"),
 		),
 	}
 }
