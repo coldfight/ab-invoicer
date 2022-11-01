@@ -11,18 +11,16 @@ import (
 )
 
 func main() {
-	if os.Getenv("HELP_DEBUG") != "" {
-		if f, err := tea.LogToFile("logs/debug.log", "app"); err != nil {
-			fmt.Println("Couldn't open a file for logging:", err)
-			os.Exit(1)
-		} else {
-			defer func() {
-				err = f.Close()
-				if err != nil {
-					log.Fatal(err)
-				}
-			}()
-		}
+	if f, err := tea.LogToFile("logs/debug.log", "help"); err != nil {
+		fmt.Println("Couldn't open a file for logging:", err)
+		os.Exit(1)
+	} else {
+		defer func() {
+			err = f.Close()
+			if err != nil {
+				log.Fatal(err)
+			}
+		}()
 	}
 
 	// @todo: convert to using Gorm

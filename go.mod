@@ -6,6 +6,7 @@ require (
 	github.com/JohannesKaufmann/html-to-markdown v1.3.6 // indirect
 	github.com/PuerkitoBio/goquery v1.8.0 // indirect
 	github.com/SebastiaanKlippert/go-wkhtmltopdf v1.7.2 // indirect
+	github.com/TwiN/go-color v1.2.0 // indirect
 	github.com/andybalholm/cascadia v1.3.1 // indirect
 	github.com/atotto/clipboard v0.1.4 // indirect
 	github.com/charmbracelet/bubbles v0.14.0 // indirect

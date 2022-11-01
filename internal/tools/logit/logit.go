@@ -2,7 +2,9 @@ package logit
 
 import (
 	"fmt"
+	"github.com/TwiN/go-color"
 	"log"
+	"os"
 	"runtime"
 )
 
@@ -14,22 +16,28 @@ func appendFilePath() string {
 	return fmt.Sprintf("%s:%d -", file, no)
 }
 
-func general(prefix string, v ...any) {
-	log.Println(append([]interface{}{prefix, appendFilePath()}, v...)...)
+func general(prefix string, c string, v ...any) {
+	if os.Getenv("COLOR_DEBUG") != "" {
+		coloredPrefix := color.InBold(color.Ize(c, prefix))
+		log.Println(append([]interface{}{coloredPrefix, appendFilePath()}, v...)...)
+	} else {
+		log.Println(append([]interface{}{prefix, appendFilePath()}, v...)...)
+	}
+
 }
 
 func Info(v ...any) {
-	general("[INFO]", v...)
+	general("[INFO]", color.Green, v...)
 }
 
 func Warn(v ...any) {
-	general("[WARN]", v...)
+	general("[WARN]", color.Yellow, v...)
 }
 
 func Error(v ...any) {
-	general("[ERROR]", v...)
+	general("[ERROR]", color.Red, v...)
 }
 
 func Debug(v ...any) {
-	general("[DEBUG]", v...)
+	general("[DEBUG]", color.Blue, v...)
 }

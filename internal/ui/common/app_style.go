@@ -13,4 +13,16 @@ var (
 	StatusMessageStyle = lipgloss.NewStyle().
 				Foreground(lipgloss.AdaptiveColor{Light: "#04B575", Dark: "#04B575"}).
 				Render
+
+	// DocStyle styling for viewports
+	DocStyle = lipgloss.NewStyle().Margin(0, 2)
+
+	// HelpStyle styling for help context menu
+	HelpStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("241")).Render
+
+	// ErrStyle provides styling for error messages
+	ErrStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("#bd534b")).Render
+
+	// AlertStyle provides styling for alert messages
+	AlertStyle = lipgloss.NewStyle().Foreground(lipgloss.Color("62")).Render
 )

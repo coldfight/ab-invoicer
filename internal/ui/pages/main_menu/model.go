@@ -4,7 +4,6 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -14,10 +13,9 @@ type MenuItem struct {
 	state       common.SessionState
 }
 
-func (i MenuItem) Title() string                 { return i.title }
-func (i MenuItem) Description() string           { return i.description }
-func (i MenuItem) FilterValue() string           { return i.title }
-func (i MenuItem) GetState() common.SessionState { return i.state }
+func (i MenuItem) Title() string       { return i.title }
+func (i MenuItem) Description() string { return i.description }
+func (i MenuItem) FilterValue() string { return i.title }
 
 type listKeyMap struct {
 	toggleHelpMenu key.Binding
@@ -87,11 +85,12 @@ func (m Model) Init() tea.Cmd {
 }
 
 func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
-	logit.Debug("main menu's update")
 	var cmds []tea.Cmd
 
 	switch msg := msg.(type) {
 	case tea.WindowSizeMsg:
+		//top, right, bottom, left := common.AppStyle.GetPadding()
+		//m.list.SetSize(msg.Width-left-right, msg.Height-top-bottom-1)
 		h, v := common.AppStyle.GetFrameSize()
 		m.list.SetSize(msg.Width-h, msg.Height-v)
 

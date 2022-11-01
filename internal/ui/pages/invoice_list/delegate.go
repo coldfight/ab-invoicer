@@ -1,4 +1,4 @@
-package main_menu
+package invoice_list
 
 import (
 	"github.com/charmbracelet/bubbles/key"

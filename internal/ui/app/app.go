@@ -54,26 +54,21 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	// Listen for messages
 	switch msg.(type) {
 	case tea.WindowSizeMsg:
-		logit.Debug("Resizing window", msg)
 		app.windowSize = msg.(tea.WindowSizeMsg)
 	case common.SwitchToStateMsg:
-		logit.Debug("Switching State", msg)
-		v := msg.(common.SwitchToStateMsg).State
-		switch v {
+		s := msg.(common.SwitchToStateMsg).State
+		switch s {
 		case common.InvoiceListView:
-			logit.Debug("Creating a new invoice list view", msg)
-			app.invoiceList = invoice_list.New()
+			app.invoiceList = invoice_list.New(app.windowSize)
 		}
-		app.state = v
+		app.state = s
 	}
 
 	// Delegate the Update methods to each sub-model
 	switch app.state {
 	case common.MainMenuView:
-		logit.Debug("Update main menu", msg)
 		app.mainMenu, cmd = app.mainMenu.Update(msg)
 	case common.InvoiceListView:
-		logit.Debug("Update invoice list", msg)
 		app.invoiceList, cmd = app.invoiceList.Update(msg)
 	default:
 		app.mainMenu, cmd = app.mainMenu.Update(msg)

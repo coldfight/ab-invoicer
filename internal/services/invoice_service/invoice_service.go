@@ -39,5 +39,8 @@ func GetInvoices() []models.Invoice {
 	if err != nil {
 		log.Fatal(err)
 	}
+
+	// @todo: Get the expenses, etc for each invoice
+
 	return invoices
 }
