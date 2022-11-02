@@ -17,12 +17,10 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
 		var (
-			state         common.SessionState
 			invoiceNumber models.InvoiceNumber
 		)
 
 		if i, ok := m.SelectedItem().(MenuItem); ok {
-			state = i.state
 			invoiceNumber = i.invoiceNumber
 		} else {
 			return nil
@@ -35,7 +33,16 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 				var cmds []tea.Cmd
 				cmds = append(cmds, func() tea.Msg {
 					return common.SwitchToStateMsg{
-						State: state,
+						State: common.InvoiceItemView,
+						Data:  invoiceNumber,
+					}
+				})
+				return tea.Batch(cmds...)
+			case key.Matches(msg, keys.edit):
+				var cmds []tea.Cmd
+				cmds = append(cmds, func() tea.Msg {
+					return common.SwitchToStateMsg{
+						State: common.EditInvoiceFormView,
 						Data:  invoiceNumber,
 					}
 				})
@@ -46,7 +53,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		return nil
 	}
 
-	help := []key.Binding{keys.choose}
+	help := []key.Binding{keys.choose, keys.edit}
 
 	d.ShortHelpFunc = func() []key.Binding {
 		return help
@@ -61,6 +68,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 type delegateKeyMap struct {
 	choose key.Binding
+	edit   key.Binding
 }
 
 // ShortHelp Additional short help entries. This satisfies
@@ -68,6 +76,7 @@ type delegateKeyMap struct {
 func (d delegateKeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		d.choose,
+		d.edit,
 	}
 }
 
@@ -76,14 +85,19 @@ func (d delegateKeyMap) ShortHelp() []key.Binding {
 func (d delegateKeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{{
 		d.choose,
+		d.edit,
 	}}
 }
 
 func newDelegateKeyMap() *delegateKeyMap {
 	return &delegateKeyMap{
 		choose: key.NewBinding(
-			key.WithKeys("enter"),
-			key.WithHelp("enter", "choose"),
+			key.WithKeys("enter", "v"),
+			key.WithHelp("enter/v", "view invoice"),
+		),
+		edit: key.NewBinding(
+			key.WithKeys("e"),
+			key.WithHelp("e", "edit invoice"),
 		),
 	}
 }

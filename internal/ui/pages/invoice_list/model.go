@@ -13,7 +13,6 @@ import (
 type MenuItem struct {
 	title         string
 	description   string
-	state         common.SessionState
 	invoiceNumber models.InvoiceNumber
 }
 
@@ -59,7 +58,6 @@ func New(windowSize tea.WindowSizeMsg) Model {
 		menuItems = append(menuItems, MenuItem{
 			title:         inv.InvoiceDate.Format("Jan 02, 2006"),
 			description:   fmt.Sprintf("%s - %f", inv.BilledTo.Name, inv.Total()),
-			state:         common.InvoiceItemView,
 			invoiceNumber: inv.InvoiceNumber,
 		})
 	}

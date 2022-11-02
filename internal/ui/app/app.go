@@ -6,6 +6,7 @@ import (
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/edit_invoice_form"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_item"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_list"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/main_menu"
@@ -72,6 +73,16 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 			} else {
 				app.invoiceItem = invoice_item.New(invoiceNumber, app.windowSize)
 			}
+		case common.EditInvoiceFormView:
+			invoiceNumber, ok := msg.(common.SwitchToStateMsg).Data.(models.InvoiceNumber)
+			if !ok {
+				logit.Error("type asserting invoiceNumber is incorrect", invoiceNumber)
+				return app, func() tea.Msg {
+					return common.SwitchToStateMsg{State: common.InvoiceListView}
+				}
+			} else {
+				app.editInvoiceForm = edit_invoice_form.New(invoiceNumber, app.windowSize)
+			}
 		}
 		app.state = s
 	}
@@ -82,6 +93,8 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		app.invoiceList, cmd = app.invoiceList.Update(msg)
 	case common.InvoiceItemView:
 		app.invoiceItem, cmd = app.invoiceItem.Update(msg)
+	case common.EditInvoiceFormView:
+		app.editInvoiceForm, cmd = app.editInvoiceForm.Update(msg)
 	default:
 		app.mainMenu, cmd = app.mainMenu.Update(msg)
 	}
@@ -95,6 +108,8 @@ func (app AppModel) View() string {
 		return app.invoiceList.View()
 	case common.InvoiceItemView:
 		return app.invoiceItem.View()
+	case common.EditInvoiceFormView:
+		return app.editInvoiceForm.View()
 	default:
 		return app.mainMenu.View()
 	}

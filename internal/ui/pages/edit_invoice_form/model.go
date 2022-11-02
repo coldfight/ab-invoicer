@@ -2,12 +2,13 @@ package edit_invoice_form
 
 import (
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/coldfight/ab-invoicer/internal/models"
 )
 
 type Model struct {
 }
 
-func New() Model {
+func New(invoiceNumber models.InvoiceNumber, windowSize tea.WindowSizeMsg) Model {
 	return Model{}
 }
 
