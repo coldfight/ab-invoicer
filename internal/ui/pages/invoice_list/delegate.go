@@ -4,23 +4,29 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/tools/logit"
+	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
+// The delegate is used if you want to manipulate or do something
+// with a specific list item
+
+// newItemDelegate creates a new item delegate
 func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 	d := list.NewDefaultDelegate()
 
 	d.UpdateFunc = func(msg tea.Msg, m *list.Model) tea.Cmd {
-		var state common.SessionState
+		var (
+			state         common.SessionState
+			invoiceNumber models.InvoiceNumber
+		)
 
 		if i, ok := m.SelectedItem().(MenuItem); ok {
 			state = i.state
+			invoiceNumber = i.invoiceNumber
 		} else {
 			return nil
 		}
-
-		logit.Debug("state: ", state)
 
 		switch msg := msg.(type) {
 		case tea.KeyMsg:
@@ -28,8 +34,10 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 			case key.Matches(msg, keys.choose):
 				var cmds []tea.Cmd
 				cmds = append(cmds, func() tea.Msg {
-					// @todo: This will need to switch to view individual invoice
-					return common.SwitchToStateMsg{State: state}
+					return common.SwitchToStateMsg{
+						State: state,
+						Data:  invoiceNumber,
+					}
 				})
 				return tea.Batch(cmds...)
 			}

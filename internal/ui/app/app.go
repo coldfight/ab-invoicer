@@ -3,8 +3,10 @@ package app
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
+	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
+	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_item"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/invoice_list"
 	"github.com/coldfight/ab-invoicer/internal/ui/pages/main_menu"
 	"os"
@@ -60,19 +62,28 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		switch s {
 		case common.InvoiceListView:
 			app.invoiceList = invoice_list.New(app.windowSize)
+		case common.InvoiceItemView:
+			invoiceNumber, ok := msg.(common.SwitchToStateMsg).Data.(models.InvoiceNumber)
+			if !ok {
+				logit.Error("type asserting invoiceNumber is incorrect", invoiceNumber)
+				return app, func() tea.Msg {
+					return common.SwitchToStateMsg{State: common.InvoiceListView}
+				}
+			} else {
+				app.invoiceItem = invoice_item.New(invoiceNumber, app.windowSize)
+			}
 		}
 		app.state = s
 	}
 
 	// Delegate the Update methods to each sub-model
 	switch app.state {
-	case common.MainMenuView:
-		app.mainMenu, cmd = app.mainMenu.Update(msg)
 	case common.InvoiceListView:
 		app.invoiceList, cmd = app.invoiceList.Update(msg)
+	case common.InvoiceItemView:
+		app.invoiceItem, cmd = app.invoiceItem.Update(msg)
 	default:
 		app.mainMenu, cmd = app.mainMenu.Update(msg)
-		logit.Warn(fmt.Sprintf("This state - %d - is not yet handled", app.state))
 	}
 	cmds = append(cmds, cmd)
 	return app, tea.Batch(cmds...)
@@ -82,6 +93,8 @@ func (app AppModel) View() string {
 	switch app.state {
 	case common.InvoiceListView:
 		return app.invoiceList.View()
+	case common.InvoiceItemView:
+		return app.invoiceItem.View()
 	default:
 		return app.mainMenu.View()
 	}

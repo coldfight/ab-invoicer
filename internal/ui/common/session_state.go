@@ -10,4 +10,7 @@ const (
 	InvoiceListView
 )
 
-type SwitchToStateMsg struct{ State SessionState }
+type SwitchToStateMsg struct {
+	State SessionState
+	Data  any
+}

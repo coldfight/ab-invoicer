@@ -7,7 +7,6 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
-	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -112,7 +111,6 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 
 		switch {
 		case key.Matches(msg, m.keys.back):
-			logit.Debug("I need to go back to the main menu")
 			backCmd := func() tea.Msg {
 				return common.SwitchToStateMsg{State: common.MainMenuView}
 			}
