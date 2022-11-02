@@ -32,19 +32,13 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 					return common.SwitchToStateMsg{State: state}
 				})
 				return tea.Batch(cmds...)
-			case key.Matches(msg, keys.back):
-				var cmds []tea.Cmd
-				cmds = append(cmds, func() tea.Msg {
-					return common.SwitchToStateMsg{State: common.MainMenuView}
-				})
-				return tea.Batch(cmds...)
 			}
 		}
 
 		return nil
 	}
 
-	help := []key.Binding{keys.choose, keys.back}
+	help := []key.Binding{keys.choose}
 
 	d.ShortHelpFunc = func() []key.Binding {
 		return help
@@ -59,7 +53,6 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 
 type delegateKeyMap struct {
 	choose key.Binding
-	back   key.Binding
 }
 
 // ShortHelp Additional short help entries. This satisfies
@@ -67,7 +60,6 @@ type delegateKeyMap struct {
 func (d delegateKeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		d.choose,
-		d.back,
 	}
 }
 
@@ -76,7 +68,6 @@ func (d delegateKeyMap) ShortHelp() []key.Binding {
 func (d delegateKeyMap) FullHelp() [][]key.Binding {
 	return [][]key.Binding{{
 		d.choose,
-		d.back,
 	}}
 }
 
@@ -85,10 +76,6 @@ func newDelegateKeyMap() *delegateKeyMap {
 		choose: key.NewBinding(
 			key.WithKeys("enter"),
 			key.WithHelp("enter", "choose"),
-		),
-		back: key.NewBinding(
-			key.WithKeys("x"),
-			key.WithHelp("x", "back to main menu"),
 		),
 	}
 }

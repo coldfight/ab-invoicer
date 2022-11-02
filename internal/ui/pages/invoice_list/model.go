@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
+	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -23,6 +24,7 @@ func (i MenuItem) FilterValue() string { return i.title }
 
 type listKeyMap struct {
 	toggleHelpMenu key.Binding
+	back           key.Binding
 }
 
 func newListKeyMap() *listKeyMap {
@@ -30,6 +32,10 @@ func newListKeyMap() *listKeyMap {
 		toggleHelpMenu: key.NewBinding(
 			key.WithKeys("H"),
 			key.WithHelp("H", "toggle help"),
+		),
+		back: key.NewBinding(
+			key.WithKeys("esc"),
+			key.WithHelp("esc", "back to main menu"),
 		),
 	}
 }
@@ -75,6 +81,7 @@ func New(windowSize tea.WindowSizeMsg) Model {
 	menuList.AdditionalFullHelpKeys = func() []key.Binding {
 		return []key.Binding{
 			listKeys.toggleHelpMenu,
+			listKeys.back,
 		}
 	}
 
@@ -104,6 +111,12 @@ func (m Model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		}
 
 		switch {
+		case key.Matches(msg, m.keys.back):
+			logit.Debug("I need to go back to the main menu")
+			backCmd := func() tea.Msg {
+				return common.SwitchToStateMsg{State: common.MainMenuView}
+			}
+			return m, backCmd
 		case key.Matches(msg, m.keys.toggleHelpMenu):
 			m.list.SetShowHelp(!m.list.ShowHelp())
 			return m, nil
