@@ -53,15 +53,8 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		return nil
 	}
 
-	help := []key.Binding{keys.choose, keys.edit}
-
-	d.ShortHelpFunc = func() []key.Binding {
-		return help
-	}
-
-	d.FullHelpFunc = func() [][]key.Binding {
-		return [][]key.Binding{help}
-	}
+	d.ShortHelpFunc = keys.ShortHelp
+	d.FullHelpFunc = keys.FullHelp
 
 	return d
 }
@@ -76,7 +69,6 @@ type delegateKeyMap struct {
 func (d delegateKeyMap) ShortHelp() []key.Binding {
 	return []key.Binding{
 		d.choose,
-		d.edit,
 	}
 }
 

@@ -4,7 +4,6 @@ import (
 	"github.com/charmbracelet/bubbles/key"
 	"github.com/charmbracelet/bubbles/list"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/tools/logit"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -35,15 +34,8 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 		return nil
 	}
 
-	help := []key.Binding{keys.choose}
-
-	d.ShortHelpFunc = func() []key.Binding {
-		return help
-	}
-
-	d.FullHelpFunc = func() [][]key.Binding {
-		return [][]key.Binding{help}
-	}
+	d.ShortHelpFunc = keys.ShortHelp
+	d.FullHelpFunc = keys.FullHelp
 
 	return d
 }
@@ -55,7 +47,6 @@ type delegateKeyMap struct {
 // ShortHelp Additional short help entries. This satisfies
 // the help.KeyMap interface and is entirely optional.
 func (d delegateKeyMap) ShortHelp() []key.Binding {
-	logit.Debug(d)
 	return []key.Binding{d.choose}
 }
 
