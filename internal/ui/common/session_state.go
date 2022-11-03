@@ -11,6 +11,7 @@ const (
 )
 
 type SwitchToStateMsg struct {
-	State SessionState
-	Data  any
+	State        SessionState
+	Data         any
+	ConstructNew bool
 }

@@ -62,7 +62,13 @@ func (app AppModel) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 		s := msg.(common.SwitchToStateMsg).State
 		switch s {
 		case common.InvoiceListView:
-			app.invoiceList = invoice_list.New(app.windowSize)
+			// Only re-retrieve the list if we're explicitly telling it
+			// to otherwise we're going to use our previously
+			// created instance
+			constructNew := msg.(common.SwitchToStateMsg).ConstructNew
+			if constructNew || app.invoiceList == nil {
+				app.invoiceList = invoice_list.New(app.windowSize)
+			}
 		case common.InvoiceItemView:
 			invoiceNumber, ok := msg.(common.SwitchToStateMsg).Data.(models.InvoiceNumber)
 			if !ok {

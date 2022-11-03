@@ -25,7 +25,7 @@ func newItemDelegate(keys *delegateKeyMap) list.DefaultDelegate {
 			case key.Matches(msg, keys.choose):
 				var cmds []tea.Cmd
 				cmds = append(cmds, func() tea.Msg {
-					return common.SwitchToStateMsg{State: state}
+					return common.SwitchToStateMsg{State: state, ConstructNew: true}
 				})
 				return tea.Batch(cmds...)
 			}
