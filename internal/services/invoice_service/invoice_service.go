@@ -1,46 +1,47 @@
 package invoice_service
 
 import (
+	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/models"
-	"github.com/coldfight/ab-invoicer/internal/repositories/expense_repository"
-	"github.com/coldfight/ab-invoicer/internal/repositories/invoice_repository"
-	"github.com/coldfight/ab-invoicer/internal/repositories/labour_repository"
-	"log"
+	"gorm.io/driver/sqlite"
+	"gorm.io/gorm"
 )
 
-func GetFullInvoiceRecord(id int) models.Invoice {
-	// Grab main invoice
-	invoice, err := invoice_repository.GetById(id)
+// @todo: Instead of failing log.Fatal we should be returning it and handling it nicely on the "front-end"
+
+func GetFullInvoiceRecord(invoiceNumber models.InvoiceNumber) models.Invoice {
+	db, err := gorm.Open(sqlite.Open("storage/test.db"), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		panic(fmt.Sprintf("failed to connect to database: %s", err.Error()))
 	}
 
-	// Grab expenses
-	expenseList, err := expense_repository.GetByInvoiceId(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	invoice.ExpenseList = expenseList
-
-	// Grab labour
-	labourList, err := labour_repository.GetByInvoiceId(id)
-	if err != nil {
-		log.Fatal(err)
-	}
-	invoice.LabourList = labourList
+	var invoice models.Invoice
+	db.
+		Preload("Owner").
+		Preload("Customer").
+		Preload("Expenses").
+		Preload("Labours").
+		First(&invoice, "invoice_number = ?", invoiceNumber)
 
 	return invoice
 }
 
-// @todo: Instead of failing log.Fatal we should be returning it and handling it nicely on the "front-end"
-
 func GetInvoices() []models.Invoice {
-	invoices, err := invoice_repository.GetAll()
+	db, err := gorm.Open(sqlite.Open("storage/test.db"), &gorm.Config{})
 	if err != nil {
-		log.Fatal(err)
+		panic(fmt.Sprintf("failed to connect to database: %s", err.Error()))
 	}
 
-	// @todo: Get the expenses, etc for each invoice
+	var invoices []models.Invoice
+	result := db.
+		Preload("Owner").
+		Preload("Customer").
+		Preload("Expenses").
+		Preload("Labours").
+		Find(&invoices)
+	if result.Error != nil {
+		return []models.Invoice{}
+	}
 
 	return invoices
 }

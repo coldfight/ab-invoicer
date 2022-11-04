@@ -23,7 +23,6 @@ func main() {
 		}()
 	}
 
-	// @todo: convert to using Gorm
 	db_service.CreateInitialDatabase()
 	invoice := invoice_service.GetFullInvoiceRecord(1)
 	invoice_service.NewDocumentFromInvoice(invoice)

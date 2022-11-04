@@ -32,15 +32,18 @@ func (d *Date) SetFromString(layout, dateStr string) error {
 }
 
 type Invoice struct {
-	gorm.Model
-	Owner         Owner    // hasOne
-	Customer      Customer // hasOne
-	ExpenseList   ExpenseList
-	LabourList    LabourList
+	Owner         Owner
+	Customer      Customer
 	InvoiceNumber InvoiceNumber
 	InvoiceDate   Date
+	// --
+	gorm.Model
+	OwnerID    uint
+	CustomerID uint
+	Expenses   ExpenseList
+	Labours    LabourList
 }
 
 func (i Invoice) Total() float64 {
-	return i.ExpenseList.ExpensesWithTaxesSubtotal() + i.LabourList.LabourSubtotal()
+	return i.Expenses.ExpensesWithTaxesSubtotal() + i.Labours.LabourSubtotal()
 }

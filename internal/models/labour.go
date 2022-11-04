@@ -3,10 +3,12 @@ package models
 import "gorm.io/gorm"
 
 type Labour struct {
-	gorm.Model
 	Date        Date
 	Description string
 	Amount      float64
+	// --
+	gorm.Model
+	InvoiceID uint
 }
 type LabourList []Labour
 

@@ -3,7 +3,6 @@ package models
 import "gorm.io/gorm"
 
 type Owner struct {
-	gorm.Model
 	Name       string
 	Street     string
 	City       string
@@ -11,4 +10,7 @@ type Owner struct {
 	PostalCode string
 	Phone      string
 	Email      string
+	// --
+	gorm.Model
+	Invoices []Invoice // Has many
 }

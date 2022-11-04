@@ -3,11 +3,12 @@ package models
 import "gorm.io/gorm"
 
 type Expense struct {
-	gorm.Model
 	Quantity    int
 	Description string
 	UnitPrice   float64
-	// should I add id int and invoice int?
+	// --
+	gorm.Model
+	InvoiceID uint
 }
 type ExpenseList []Expense
 
