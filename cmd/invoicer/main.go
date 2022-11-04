@@ -3,9 +3,7 @@ package main
 import (
 	"fmt"
 	tea "github.com/charmbracelet/bubbletea"
-	"github.com/coldfight/ab-invoicer/internal/services/db_service"
-	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
-	_ "github.com/mattn/go-sqlite3"
+	"github.com/coldfight/ab-invoicer/internal/ui/app"
 	"log"
 	"os"
 )
@@ -23,9 +21,9 @@ func main() {
 		}()
 	}
 
-	db_service.CreateInitialDatabase()
-	invoice := invoice_service.GetFullInvoiceRecord(1)
-	invoice_service.NewDocumentFromInvoice(invoice)
+	//db_service.CreateInitialDatabase()
+	//invoice := invoice_service.GetFullInvoiceRecord(3)
+	//invoice_service.NewDocumentFromInvoice(invoice)
 
-	//app.Run()
+	app.Run()
 }

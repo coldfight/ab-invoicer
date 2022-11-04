@@ -1,19 +1,14 @@
 package invoice_service
 
 import (
-	"fmt"
 	"github.com/coldfight/ab-invoicer/internal/models"
-	"gorm.io/driver/sqlite"
-	"gorm.io/gorm"
+	"github.com/coldfight/ab-invoicer/internal/services/db_service"
 )
 
 // @todo: Instead of failing log.Fatal we should be returning it and handling it nicely on the "front-end"
 
 func GetFullInvoiceRecord(invoiceNumber models.InvoiceNumber) models.Invoice {
-	db, err := gorm.Open(sqlite.Open("storage/test.db"), &gorm.Config{})
-	if err != nil {
-		panic(fmt.Sprintf("failed to connect to database: %s", err.Error()))
-	}
+	db := db_service.GetConnection()
 
 	var invoice models.Invoice
 	db.
@@ -27,10 +22,7 @@ func GetFullInvoiceRecord(invoiceNumber models.InvoiceNumber) models.Invoice {
 }
 
 func GetInvoices() []models.Invoice {
-	db, err := gorm.Open(sqlite.Open("storage/test.db"), &gorm.Config{})
-	if err != nil {
-		panic(fmt.Sprintf("failed to connect to database: %s", err.Error()))
-	}
+	db := db_service.GetConnection()
 
 	var invoices []models.Invoice
 	result := db.
@@ -38,7 +30,9 @@ func GetInvoices() []models.Invoice {
 		Preload("Customer").
 		Preload("Expenses").
 		Preload("Labours").
+		Order("invoice_number asc").
 		Find(&invoices)
+
 	if result.Error != nil {
 		return []models.Invoice{}
 	}

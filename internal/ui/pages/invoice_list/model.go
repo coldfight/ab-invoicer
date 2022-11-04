@@ -7,6 +7,7 @@ import (
 	tea "github.com/charmbracelet/bubbletea"
 	"github.com/coldfight/ab-invoicer/internal/models"
 	"github.com/coldfight/ab-invoicer/internal/services/invoice_service"
+	"github.com/coldfight/ab-invoicer/internal/tools/template_helpers"
 	"github.com/coldfight/ab-invoicer/internal/ui/common"
 )
 
@@ -18,7 +19,7 @@ type MenuItem struct {
 
 func (i MenuItem) Title() string       { return i.title }
 func (i MenuItem) Description() string { return i.description }
-func (i MenuItem) FilterValue() string { return i.title }
+func (i MenuItem) FilterValue() string { return fmt.Sprintf("%s %s", i.title, i.description) }
 
 type listKeyMap struct {
 	toggleHelpMenu key.Binding
@@ -56,8 +57,12 @@ func New(windowSize tea.WindowSizeMsg) Model {
 	var menuItems []list.Item
 	for _, inv := range invoices {
 		menuItems = append(menuItems, MenuItem{
-			title:         inv.InvoiceDate.Format("Jan 02, 2006"),
-			description:   fmt.Sprintf("%s - %f", inv.Customer.Name, inv.Total()),
+			title: inv.InvoiceDate.Format("Jan 02, 2006"),
+			description: fmt.Sprintf("Invoice #%s: %s - %s",
+				inv.InvoiceNumber.Padded(),
+				inv.Customer.Name,
+				template_helpers.AsCurrency(inv.Total()),
+			),
 			invoiceNumber: inv.InvoiceNumber,
 		})
 	}
