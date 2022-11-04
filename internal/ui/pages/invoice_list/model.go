@@ -57,7 +57,7 @@ func New(windowSize tea.WindowSizeMsg) Model {
 	for _, inv := range invoices {
 		menuItems = append(menuItems, MenuItem{
 			title:         inv.InvoiceDate.Format("Jan 02, 2006"),
-			description:   fmt.Sprintf("%s - %f", inv.BilledTo.Name, inv.Total()),
+			description:   fmt.Sprintf("%s - %f", inv.Customer.Name, inv.Total()),
 			invoiceNumber: inv.InvoiceNumber,
 		})
 	}

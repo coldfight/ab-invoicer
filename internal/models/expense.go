@@ -1,6 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Expense struct {
+	gorm.Model
 	Quantity    int
 	Description string
 	UnitPrice   float64

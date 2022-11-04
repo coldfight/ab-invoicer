@@ -33,7 +33,7 @@ WHERE i.id = ?
 	err = stmt.QueryRow(id).Scan(
 		&invoice.InvoiceNumber, &invoiceDateString,
 		&invoice.Owner.Name, &invoice.Owner.Street, &invoice.Owner.City, &invoice.Owner.Province, &invoice.Owner.PostalCode, &invoice.Owner.Phone, &invoice.Owner.Email,
-		&invoice.BilledTo.Name, &invoice.BilledTo.Street, &invoice.BilledTo.City, &invoice.BilledTo.Province, &invoice.BilledTo.PostalCode,
+		&invoice.Customer.Name, &invoice.Customer.Street, &invoice.Customer.City, &invoice.Customer.Province, &invoice.Customer.PostalCode,
 	)
 	if err != nil {
 		return invoice, err
@@ -72,7 +72,7 @@ ORDER BY date(i.invoiceDate) ASC
 
 		err = rows.Scan(&invoice.InvoiceNumber, &invoiceDateString,
 			&invoice.Owner.Name, &invoice.Owner.Street, &invoice.Owner.City, &invoice.Owner.Province, &invoice.Owner.PostalCode, &invoice.Owner.Phone, &invoice.Owner.Email,
-			&invoice.BilledTo.Name, &invoice.BilledTo.Street, &invoice.BilledTo.City, &invoice.BilledTo.Province, &invoice.BilledTo.PostalCode)
+			&invoice.Customer.Name, &invoice.Customer.Street, &invoice.Customer.City, &invoice.Customer.Province, &invoice.Customer.PostalCode)
 		if err != nil {
 			return nil, err
 		}

@@ -1,6 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Labour struct {
+	gorm.Model
 	Date        Date
 	Description string
 	Amount      float64

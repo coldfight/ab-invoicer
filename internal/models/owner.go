@@ -1,6 +1,9 @@
 package models
 
+import "gorm.io/gorm"
+
 type Owner struct {
+	gorm.Model
 	Name       string
 	Street     string
 	City       string

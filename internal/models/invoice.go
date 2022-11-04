@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -31,8 +32,9 @@ func (d *Date) SetFromString(layout, dateStr string) error {
 }
 
 type Invoice struct {
-	Owner         Owner
-	BilledTo      Customer
+	gorm.Model
+	Owner         Owner    // hasOne
+	Customer      Customer // hasOne
 	ExpenseList   ExpenseList
 	LabourList    LabourList
 	InvoiceNumber InvoiceNumber

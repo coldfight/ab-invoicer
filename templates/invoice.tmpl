@@ -46,7 +46,7 @@
                     <div style="font-size: 80px; line-height: 1em;"
                          class="border border-info border-2 border-bottom border-bottom-0">INVOICE
                     </div>
-                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber | PaddedNumber}} |
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber.Padded}} |
                         <strong>DATE:</strong>
                         {{.Invoice.InvoiceDate.Format "2006/01/02" }}
                     </div>
@@ -63,10 +63,10 @@
             <strong>Billed To:</strong>
         </div>
         <div class="col">
-            {{.Invoice.BilledTo.Name}}<br>
-            {{.Invoice.BilledTo.Street}}<br>
-            {{.Invoice.BilledTo.City}}, {{.Invoice.BilledTo.Province}}<br>
-            {{.Invoice.BilledTo.PostalCode}}
+            {{.Invoice.Customer.Name}}<br>
+            {{.Invoice.Customer.Street}}<br>
+            {{.Invoice.Customer.City}}, {{.Invoice.Customer.Province}}<br>
+            {{.Invoice.Customer.PostalCode}}
         </div>
     </div>
 
