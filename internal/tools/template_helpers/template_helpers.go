@@ -9,21 +9,21 @@ import (
 	"net/http"
 )
 
-// asCurrency - template function that returns a currency string of a float
-func asCurrency(num float64) string {
+// AsCurrency - template function that returns a currency string of a float
+func AsCurrency(num float64) string {
 	return fmt.Sprintf("$%.2f", num)
 }
 
-// paddedNumber - template function that pads the number with leading 0's
-func paddedNumber(num int) string {
+// PaddedNumber - template function that pads the number with leading 0's
+func PaddedNumber(num int) string {
 	return fmt.Sprintf("%03d", num)
 }
 
 // GetGlobalTemplateFunctions - returns a FuncMap of global template functions
 func GetGlobalTemplateFunctions() template.FuncMap {
 	return template.FuncMap{
-		"AsCurrency":   asCurrency,
-		"PaddedNumber": paddedNumber,
+		"AsCurrency":   AsCurrency,
+		"PaddedNumber": PaddedNumber,
 	}
 }
 

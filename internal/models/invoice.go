@@ -2,6 +2,7 @@ package models
 
 import (
 	"fmt"
+	"gorm.io/gorm"
 	"time"
 )
 
@@ -31,14 +32,17 @@ func (d *Date) SetFromString(layout, dateStr string) error {
 }
 
 type Invoice struct {
+	gorm.Model
+	OwnerID       uint        // foreign key
+	CustomerID    uint        // foreign key
+	Expenses      ExpenseList // has many
+	Labours       LabourList  // has many
 	Owner         Owner
-	BilledTo      Customer
-	ExpenseList   ExpenseList
-	LabourList    LabourList
+	Customer      Customer
 	InvoiceNumber InvoiceNumber
 	InvoiceDate   Date
 }
 
 func (i Invoice) Total() float64 {
-	return i.ExpenseList.ExpensesWithTaxesSubtotal() + i.LabourList.LabourSubtotal()
+	return i.Expenses.ExpensesWithTaxesSubtotal() + i.Labours.LabourSubtotal()
 }

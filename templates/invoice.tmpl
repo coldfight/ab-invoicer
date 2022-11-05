@@ -46,7 +46,7 @@
                     <div style="font-size: 80px; line-height: 1em;"
                          class="border border-info border-2 border-bottom border-bottom-0">INVOICE
                     </div>
-                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber | PaddedNumber}} |
+                    <div class="bg-info text-light px-2 py-1"><strong>INVOICE #</strong> {{.Invoice.InvoiceNumber.Padded}} |
                         <strong>DATE:</strong>
                         {{.Invoice.InvoiceDate.Format "2006/01/02" }}
                     </div>
@@ -63,10 +63,10 @@
             <strong>Billed To:</strong>
         </div>
         <div class="col">
-            {{.Invoice.BilledTo.Name}}<br>
-            {{.Invoice.BilledTo.Street}}<br>
-            {{.Invoice.BilledTo.City}}, {{.Invoice.BilledTo.Province}}<br>
-            {{.Invoice.BilledTo.PostalCode}}
+            {{.Invoice.Customer.Name}}<br>
+            {{.Invoice.Customer.Street}}<br>
+            {{.Invoice.Customer.City}}, {{.Invoice.Customer.Province}}<br>
+            {{.Invoice.Customer.PostalCode}}
         </div>
     </div>
 
@@ -84,7 +84,7 @@
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                {{range .Invoice.ExpenseList}}
+                {{range .Invoice.Expenses}}
                     <tr>
                         <td>{{.Quantity}}</td>
                         <td>{{.Description}}</td>
@@ -102,18 +102,18 @@
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end" style="background-color: silver">Subtotal:</td>
                     <td class="text-end" style="background-color: silver">
-                        {{.Invoice.ExpenseList.ExpensesSubtotal | AsCurrency}}</td>
+                        {{.Invoice.Expenses.ExpensesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Tax:</td>
-                    <td class="text-end table-dark bg-secondary">{{.Invoice.ExpenseList.ExpensesTaxes | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.Expenses.ExpensesTaxes | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Expenses:</td>
                     <td class="text-end table-dark">
-                        {{.Invoice.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
+                        {{.Invoice.Expenses.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -134,7 +134,7 @@
                 </tr>
                 </thead>
                 <tbody class="table-group-divider">
-                {{range .Invoice.LabourList}}
+                {{range .Invoice.Labours}}
                     <tr>
                         <td>{{.Date.Format "2006/01/02"}}</td>
                         <td colspan="2">{{.Description}}</td>
@@ -146,7 +146,7 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark">Total Labour:</td>
-                    <td class="text-end table-dark">{{.Invoice.LabourList.LabourSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark">{{.Invoice.Labours.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 </tfoot>
             </table>
@@ -170,12 +170,12 @@
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Expenses:</td>
-                    <td class="text-end table-dark bg-secondary">{{.Invoice.ExpenseList.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.Expenses.ExpensesWithTaxesSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr>
                     <td colspan="2" style="border-bottom: 0"></td>
                     <td class="text-end table-dark bg-secondary">Labour:</td>
-                    <td class="text-end table-dark bg-secondary">{{.Invoice.LabourList.LabourSubtotal | AsCurrency}}</td>
+                    <td class="text-end table-dark bg-secondary">{{.Invoice.Labours.LabourSubtotal | AsCurrency}}</td>
                 </tr>
                 <tr style="font-size: 1.5em">
                     <td colspan="2" style="border-bottom: 0;"></td>

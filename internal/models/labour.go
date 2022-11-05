@@ -1,6 +1,10 @@
 package models
 
+import "gorm.io/gorm"
+
 type Labour struct {
+	gorm.Model
+	InvoiceID   uint // foreign key
 	Date        Date
 	Description string
 	Amount      float64

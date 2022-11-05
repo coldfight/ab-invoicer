@@ -1,10 +1,13 @@
 package models
 
+import "gorm.io/gorm"
+
 type Expense struct {
+	gorm.Model
+	InvoiceID   uint // foreign key
 	Quantity    int
 	Description string
-	UnitPrice   float64
-	// should I add id int and invoice int?
+	UnitPrice   float64 // @todo: Update this to custom type `type Currency float64` so we can have a formatted() method
 }
 type ExpenseList []Expense
 
