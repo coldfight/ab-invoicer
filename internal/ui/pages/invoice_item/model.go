@@ -28,19 +28,54 @@ type model struct {
 
 func (m model) Init() tea.Cmd { return nil }
 
+type switchTableMsg struct {
+	selectedTable table.Model
+}
+
+func (m model) SwitchTableCmd(selectedTable int) tea.Cmd {
+	return func() tea.Msg {
+		switch selectedTable {
+		case 0:
+			return switchTableMsg{m.ownerInfo}
+		case 1:
+			return switchTableMsg{m.customerInfo}
+		case 2:
+			return switchTableMsg{m.expensesTable}
+		default:
+			return switchTableMsg{m.labourTable}
+		}
+	}
+}
+
 func (m model) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	var cmd tea.Cmd
 	switch msg := msg.(type) {
+	case switchTableMsg:
+		m.table.Blur()
+		m.table = msg.selectedTable
+		m.table.Focus()
 	case tea.KeyMsg:
+		// @todo: CHange these to use a key binding map
 		switch msg.String() {
-		//case "tab":
-		//	m.table.Blur()
-		case "esc":
-			if m.table.Focused() {
-				m.table.Blur()
-			} else {
-				m.table.Focus()
+		case "tab":
+			logit.Debug("pressing tab so go to next table")
+			m.selectedTable += 1
+			if m.selectedTable > 3 {
+				m.selectedTable = 0
 			}
+			return m, m.SwitchTableCmd(m.selectedTable)
+		case "shift+tab":
+			logit.Debug("pressing tab so go to next table")
+			m.selectedTable -= 1
+			if m.selectedTable < 0 {
+				m.selectedTable = 3
+			}
+			return m, m.SwitchTableCmd(m.selectedTable)
+		case "esc":
+			backCmd := func() tea.Msg {
+				return common.SwitchToStateMsg{State: common.InvoiceListView}
+			}
+			return m, backCmd
 		case "q", "ctrl+c":
 			return m, tea.Quit
 		case "enter":
@@ -188,6 +223,7 @@ func createLaboursTable(invoice *models.Invoice) table.Model {
 func New(invoiceNumber models.InvoiceNumber, windowSizeMsg tea.WindowSizeMsg) model {
 	invoice := invoice_service.GetFullInvoiceRecord(invoiceNumber)
 	owner := createOwnerTable(&invoice)
+	owner.Focus()
 	customer := createCustomerTable(&invoice)
 	expenses := createExpensesTable(&invoice)
 	labours := createLaboursTable(&invoice)

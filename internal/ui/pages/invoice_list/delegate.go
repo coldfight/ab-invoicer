@@ -84,8 +84,8 @@ func (d delegateKeyMap) FullHelp() [][]key.Binding {
 func newDelegateKeyMap() *delegateKeyMap {
 	return &delegateKeyMap{
 		choose: key.NewBinding(
-			key.WithKeys("enter", "v"),
-			key.WithHelp("enter/v", "view invoice"),
+			key.WithKeys("enter", " "),
+			key.WithHelp("enter/space", "view invoice"),
 		),
 		edit: key.NewBinding(
 			key.WithKeys("e"),
